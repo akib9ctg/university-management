@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{511C35BE-407C-4E97-B383-883FF86B6D0F}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityManagement.API", "src\UniversityManagement.API\UniversityManagement.API.csproj", "{67CE1030-886B-4BA2-9BCA-0D3E2C651046}"

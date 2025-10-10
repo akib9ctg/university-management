@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: university_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: universitydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - university_network
+
+  webapi:
+    container_name: university_api
+    build:
+      context: .
+      dockerfile: src/UniversityManagement.API/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=universitydb;Username=postgres;Password=postgres
+    networks:
+      - university_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: university_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: akib9ctg@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - university_network
+
+volumes:
+  pgdata:
+  pgadmin_data:
+
+networks:
+  university_network:
