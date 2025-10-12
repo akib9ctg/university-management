@@ -10,11 +10,11 @@ using UniversityManagement.Infrastructure.Database.Persistence;
 
 namespace UniversityManagement.Infrastructure.Database.Repository
 {
-    public sealed class UserRepository : IUserRepository
+    public sealed class UserRepository : Repository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context): base(context)
         {
             _context = context;
         }
@@ -24,10 +24,10 @@ namespace UniversityManagement.Infrastructure.Database.Repository
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
 
-        public async Task AddAsync(User user, CancellationToken cancellationToken)
-        {
-            await _context.Users.AddAsync(user, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
+        //public async Task AddAsync(User user, CancellationToken cancellationToken)
+        //{
+        //    await _context.Users.AddAsync(user, cancellationToken);
+        //    await _context.SaveChangesAsync(cancellationToken);
+        //}
     }
 }

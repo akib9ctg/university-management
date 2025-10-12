@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Common.Interfaces;
+using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 using UniversityManagement.Infrastructure.Database.Persistence;
@@ -32,7 +28,7 @@ namespace UniversityManagement.Infrastructure
 
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<ICourseRepository, CourseRepository>();
 
             return services;
         }
