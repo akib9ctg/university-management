@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UniversityManagement.Domain.Entities;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 
-namespace UniversityManagement.Infrastructure.Persistence
+namespace UniversityManagement.Infrastructure.Database.Persistence
 {
     public sealed class ApplicationDbContext
     : DbContext, IApplicationDbContext
@@ -18,6 +18,11 @@ namespace UniversityManagement.Infrastructure.Persistence
         }
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<Course> Courses => Set<Course>();
+        public DbSet<Class> Classes => Set<Class>();
+        public DbSet<CourseClass> CourseClasses => Set<CourseClass>();
+        public DbSet<UserCourse> UserCourses => Set<UserCourse>();
+        public DbSet<UserCourseClass> UserCourseClasses => Set<UserCourseClass>();
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -28,13 +33,8 @@ namespace UniversityManagement.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-                entity.HasIndex(x => x.Email).IsUnique();
-                entity.Property(x => x.Email).IsRequired().HasMaxLength(100);
-                entity.Property(x => x.PasswordHash).IsRequired();
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
         }
     }
 }

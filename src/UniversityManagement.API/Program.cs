@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application;
 using UniversityManagement.Infrastructure;
-using UniversityManagement.Infrastructure.Persistence;
+using UniversityManagement.Infrastructure.Database.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

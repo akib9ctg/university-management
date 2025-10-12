@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using UniversityManagement.Application.Common.Interfaces;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Infrastructure.Common.Interfaces;
-using UniversityManagement.Infrastructure.Persistence;
-using UniversityManagement.Infrastructure.Repository;
+using UniversityManagement.Infrastructure.Database.Persistence;
+using UniversityManagement.Infrastructure.Database.Repository;
 using UniversityManagement.Infrastructure.Services.Identity;
 
 namespace UniversityManagement.Infrastructure

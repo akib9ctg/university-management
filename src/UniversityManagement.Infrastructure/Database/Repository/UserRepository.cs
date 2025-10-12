@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Entities;
-using UniversityManagement.Infrastructure.Persistence;
+using UniversityManagement.Infrastructure.Database.Persistence;
 
-namespace UniversityManagement.Infrastructure.Repository
+namespace UniversityManagement.Infrastructure.Database.Repository
 {
     public sealed class UserRepository : IUserRepository
     {

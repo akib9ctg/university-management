@@ -15,5 +15,8 @@ namespace UniversityManagement.Domain.Entities
         public string PasswordHash { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
 
+        public ICollection<UserCourse> UserCourses { get; set; } = new List<UserCourse>();
+        public ICollection<UserCourseClass> UserCoursesClass { get; set; } =new List<UserCourseClass>();
+
     }
 }
