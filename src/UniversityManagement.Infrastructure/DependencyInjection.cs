@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UniversityManagement.Application.Classes.Interfaces;
 using UniversityManagement.Application.Common.Interfaces;
 using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Application.Users.Interfaces;
@@ -29,6 +30,7 @@ namespace UniversityManagement.Infrastructure
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IClassRepository, ClassRepository>();
 
             return services;
         }
