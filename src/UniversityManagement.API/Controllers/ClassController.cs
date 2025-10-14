@@ -1,8 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.Application.Classes.Command.CreateClass;
+using UniversityManagement.Application.Classes.Command.DeleteClass;
 using UniversityManagement.Application.Classes.Command.UpdateClass;
 using UniversityManagement.Application.Classes.Queries.GetClassById;
+using UniversityManagement.Application.Classes.Queries.GetClasses;
 
 namespace UniversityManagement.API.Controllers
 {
@@ -29,11 +31,25 @@ namespace UniversityManagement.API.Controllers
             return Success(result);
         }
 
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll([FromQuery] GetClassesRequest request, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new GetClassesQuery(request ?? new GetClassesRequest()), cancellationToken);
+            return Success(result);
+        }
+
         [HttpPut("Update")]
         public async Task<IActionResult> Update(UpdateClassRequest updateClassRequest, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new UpdateClassCommand(updateClassRequest), cancellationToken);
             return Success(result);
+        }
+
+        [HttpDelete("DeleteById")]
+        public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new DeleteClassCommand(id), cancellationToken);
+            return Success(result, "Class deleted successfully.");
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Domain.Common;
+using UniversityManagement.Infrastructure.Common.Extensions;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 
 namespace UniversityManagement.Infrastructure.Database.Repository
@@ -12,10 +14,17 @@ namespace UniversityManagement.Infrastructure.Database.Repository
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _dbContext;
-        public Repository(DbContext dbContext) 
+
+        protected IQueryable<TEntity> Queryable =>
+            _dbContext.Set<TEntity>()
+                .AsNoTracking()
+                .Where(entity => !entity.IsDeleted);
+
+        public Repository(DbContext dbContext)
         {
             _dbContext = dbContext;
         }
+
         public async Task AddAsync(TEntity entity, CancellationToken cancellationToken)
         {
             await _dbContext.AddAsync(entity);
@@ -25,32 +34,30 @@ namespace UniversityManagement.Infrastructure.Database.Repository
         public async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.IsDeleted = true;
-            entity.ModifiedAt = DateTime.UtcNow;  
+            entity.ModifiedAt = DateTime.UtcNow;
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _dbContext.Set<TEntity>()
-                                .AsNoTracking()
-                                .Where(e => !e.IsDeleted)
-                                .ToListAsync(cancellationToken);
+            return await Queryable.ToListAsync(cancellationToken);
         }
 
         public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _dbContext.Set<TEntity>()
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.ModifiedAt = DateTime.UtcNow;
             _dbContext.Entry(entity).State = EntityState.Modified;
-            
+
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
     }
 }
