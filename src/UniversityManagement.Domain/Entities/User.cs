@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniversityManagement.Domain.Common;
+using UniversityManagement.Domain.Enums;
 
 namespace UniversityManagement.Domain.Entities
 {
@@ -13,10 +11,9 @@ namespace UniversityManagement.Domain.Entities
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Student;
 
         public ICollection<UserCourse> UserCourses { get; set; } = new List<UserCourse>();
-        public ICollection<UserCourseClass> UserCoursesClass { get; set; } =new List<UserCourseClass>();
-
+        public ICollection<UserCourseClass> UserCoursesClass { get; set; } = new List<UserCourseClass>();
     }
 }

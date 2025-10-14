@@ -1,17 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using UniversityManagement.Domain.Entities;
 
 namespace UniversityManagement.Application.Courses
 {
-    public sealed record CourseResponse
-    (
+    public sealed record CourseResponse(
         Guid Id,
         string Name,
         string? Description,
         DateTime CreatedAt,
-        DateTime? ModifiedAt
-    );
+        DateTime? ModifiedAt)
+    {
+        public static CourseResponse FromEntity(Course course) =>
+            new(
+                course.Id,
+                course.Name,
+                course.Description,
+                course.CreatedAt,
+                course.ModifiedAt);
+    }
 }

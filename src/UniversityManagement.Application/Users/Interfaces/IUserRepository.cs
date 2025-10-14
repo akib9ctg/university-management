@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UniversityManagement.Application.Common.Models;
+using UniversityManagement.Application.Students.Queries.GetStudents;
 using UniversityManagement.Domain.Entities;
+using UniversityManagement.Infrastructure.Common.Interfaces;
 
 namespace UniversityManagement.Application.Users.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
         Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
-        Task AddAsync(User user, CancellationToken cancellationToken);
+        Task<PaginatedResult<User>> GetStudentsPagedAsync(GetStudentsRequest request, CancellationToken cancellationToken);
     }
 }

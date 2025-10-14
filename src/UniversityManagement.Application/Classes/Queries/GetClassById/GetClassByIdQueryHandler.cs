@@ -1,4 +1,7 @@
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UniversityManagement.Application.Classes.Interfaces;
 
 namespace UniversityManagement.Application.Classes.Queries.GetClassById
@@ -21,13 +24,7 @@ namespace UniversityManagement.Application.Classes.Queries.GetClassById
                 throw new KeyNotFoundException($"Class with Id {request.Id} not found.");
             }
 
-            return new ClassResponse(
-                existingClass.Id,
-                existingClass.Name,
-                existingClass.Description,
-                existingClass.CreatedAt,
-                existingClass.ModifiedAt
-            );
+            return ClassResponse.FromEntity(existingClass);
         }
     }
 }

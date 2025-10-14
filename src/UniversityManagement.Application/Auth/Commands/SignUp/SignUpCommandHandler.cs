@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using UniversityManagement.Application.Common.Utilities;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Entities;
+using UniversityManagement.Domain.Enums;
 
 namespace UniversityManagement.Application.Auth.Commands.SignUp
 {
@@ -32,7 +33,7 @@ namespace UniversityManagement.Application.Auth.Commands.SignUp
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 PasswordHash = PasswordHasher.Hash(request.Password),
-                Role = "Student"
+                Role = UserRole.Student
             };
             await _userRepository.AddAsync(user, cancellationToken);
             return new SignUpResponse(user.Id, user.Email);

@@ -35,6 +35,10 @@ namespace UniversityManagement.Infrastructure.Database.Persistence
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
+            modelBuilder.Entity<User>()
+                .Property(user => user.Role)
+                .HasConversion<string>();
+
         }
     }
 }

@@ -1,4 +1,6 @@
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 using UniversityManagement.Application.Classes.Interfaces;
 using UniversityManagement.Domain.Entities;
 
@@ -23,13 +25,7 @@ namespace UniversityManagement.Application.Classes.Command.CreateClass
 
             await _classRepository.AddAsync(newClass, cancellationToken);
 
-            return new ClassResponse(
-                newClass.Id,
-                newClass.Name,
-                newClass.Description,
-                newClass.CreatedAt,
-                newClass.ModifiedAt
-            );
+            return ClassResponse.FromEntity(newClass);
         }
     }
 }

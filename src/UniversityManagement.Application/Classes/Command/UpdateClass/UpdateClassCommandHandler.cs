@@ -1,4 +1,7 @@
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UniversityManagement.Application.Classes.Interfaces;
 
 namespace UniversityManagement.Application.Classes.Command.UpdateClass
@@ -26,13 +29,7 @@ namespace UniversityManagement.Application.Classes.Command.UpdateClass
 
             await _classRepository.UpdateAsync(existingClass, cancellationToken);
 
-            return new ClassResponse(
-                existingClass.Id,
-                existingClass.Name,
-                existingClass.Description,
-                existingClass.CreatedAt,
-                existingClass.ModifiedAt
-            );
+            return ClassResponse.FromEntity(existingClass);
         }
     }
 }

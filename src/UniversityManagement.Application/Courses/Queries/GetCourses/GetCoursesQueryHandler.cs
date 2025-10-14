@@ -20,12 +20,7 @@ namespace UniversityManagement.Application.Courses.Queries.GetCourses
             var pagedCourses = await _courseRepository.GetPagedAsync(filter, cancellationToken);
 
             var items = pagedCourses.Items
-                .Select(course => new CourseResponse(
-                    course.Id,
-                    course.Name,
-                    course.Description,
-                    course.CreatedAt,
-                    course.ModifiedAt))
+                .Select(CourseResponse.FromEntity)
                 .ToList();
 
             return new PaginatedResult<CourseResponse>(
