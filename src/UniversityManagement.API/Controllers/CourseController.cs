@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.Application.Courses.Command.CreateCourse;
 using UniversityManagement.Application.Courses.Command.DeleteCourse;
 using UniversityManagement.Application.Courses.Command.UpdateCourse;
+using UniversityManagement.Application.Courses.Queries.GetCourseClasses;
 using UniversityManagement.Application.Courses.Queries.GetCourseById;
+using UniversityManagement.Application.Courses.Queries.GetCourseStudents;
 using UniversityManagement.Application.Courses.Queries.GetCourses;
 
 namespace UniversityManagement.API.Controllers
@@ -35,6 +37,20 @@ namespace UniversityManagement.API.Controllers
         public async Task<IActionResult> GetAll([FromQuery] GetCoursesRequest request, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new GetCoursesQuery(request ?? new GetCoursesRequest()), cancellationToken);
+            return Success(result);
+        }
+
+        [HttpGet("GetAllStudentsByCourseId")]
+        public async Task<IActionResult> GetAllStudentsByCourseId(Guid courseId, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new GetCourseStudentsQuery(courseId), cancellationToken);
+            return Success(result);
+        }
+
+        [HttpGet("GetAllClassesByCourseId")]
+        public async Task<IActionResult> GetAllClassesByCourseId(Guid courseId, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new GetCourseClassesQuery(courseId), cancellationToken);
             return Success(result);
         }
 

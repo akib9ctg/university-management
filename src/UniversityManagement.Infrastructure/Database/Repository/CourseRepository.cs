@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Application.Courses.Queries.GetCourses;
 using UniversityManagement.Domain.Entities;
+using UniversityManagement.Domain.Enums;
 using UniversityManagement.Infrastructure.Common.Extensions;
 using UniversityManagement.Infrastructure.Database.Persistence;
 
@@ -11,8 +14,11 @@ namespace UniversityManagement.Infrastructure.Database.Repository
 {
     public sealed class CourseRepository : Repository<Course>, ICourseRepository
     {
+        private ApplicationDbContext _context;
+
         public CourseRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
+            _context = dbContext;
         }
 
         public Task<PaginatedResult<Course>> GetPagedAsync(GetCoursesRequest request, CancellationToken cancellationToken)
@@ -24,6 +30,24 @@ namespace UniversityManagement.Infrastructure.Database.Repository
             query = ApplyOrdering(query, request);
 
             return query.ToPagedResultAsync(request.PageNumber, request.PageSize, cancellationToken);
+        }
+
+        public async Task<List<User>> GetStudentsByCourseIdAsync(Guid courseId, CancellationToken cancellationToken)
+        {
+            return await _context.UserCourses
+                .AsNoTracking()
+                .Where(uc => uc.CourseId == courseId && !uc.IsDeleted && !uc.User.IsDeleted && uc.User.Role == UserRole.Student)
+                .Select(uc => uc.User)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Class>> GetClassesByCourseIdAsync(Guid courseId, CancellationToken cancellationToken)
+        {
+            return await _context.CourseClasses
+                .AsNoTracking()
+                .Where(cc => cc.CourseId == courseId && !cc.IsDeleted && !cc.Class.IsDeleted)
+                .Select(cc => cc.Class)
+                .ToListAsync(cancellationToken);
         }
 
         private static IQueryable<Course> ApplyFilters(IQueryable<Course> query, GetCoursesRequest request)

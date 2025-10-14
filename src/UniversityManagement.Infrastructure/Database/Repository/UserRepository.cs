@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Application.Students.Queries.GetStudents;
@@ -11,8 +14,11 @@ namespace UniversityManagement.Infrastructure.Database.Repository
 {
     public sealed class UserRepository : Repository<User>, IUserRepository
     {
+        private ApplicationDbContext _context;
+
         public UserRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
@@ -47,6 +53,102 @@ namespace UniversityManagement.Infrastructure.Database.Repository
             query = ApplyOrdering(query, request);
 
             return query.ToPagedResultAsync(request.PageNumber, request.PageSize, cancellationToken);
+        }
+
+        public async Task EnrollStudentInClassAsync(Guid studentId, Guid classId, Guid? assignedByUserId, CancellationToken cancellationToken)
+        {
+            var courseClass = await _context.CourseClasses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cc => cc.ClassId == classId, cancellationToken);
+
+            if (courseClass is null)
+            {
+                throw new InvalidOperationException($"Class with Id {classId} is not associated with any course.");
+            }
+
+            await EnsureUserCourseAsync(studentId, courseClass.CourseId, assignedByUserId, cancellationToken);
+
+            var isAlreadyEnrolled = await _context.UserCourseClasses
+                .AnyAsync(ucc => ucc.UserId == studentId && ucc.ClassId == classId, cancellationToken);
+
+            if (!isAlreadyEnrolled)
+            {
+                var userCourseClass = new UserCourseClass
+                {
+                    UserId = studentId,
+                    ClassId = classId,
+                    CourseId = courseClass.CourseId,
+                    AssignedByUserId = assignedByUserId,
+                    AssignedAt = DateTime.UtcNow
+                };
+
+                await _context.UserCourseClasses.AddAsync(userCourseClass, cancellationToken);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task EnrollStudentInCourseAsync(Guid studentId, Guid courseId, Guid? assignedByUserId, CancellationToken cancellationToken)
+        {
+            await EnsureUserCourseAsync(studentId, courseId, assignedByUserId, cancellationToken);
+
+            var classIds = await _context.CourseClasses
+                .Where(cc => cc.CourseId == courseId)
+                .Select(cc => cc.ClassId)
+                .ToListAsync(cancellationToken);
+
+            if (classIds.Count == 0)
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+                return;
+            }
+
+            var existingClassIds = await _context.UserCourseClasses
+                .Where(ucc => ucc.UserId == studentId && classIds.Contains(ucc.ClassId))
+                .Select(ucc => ucc.ClassId)
+                .ToListAsync(cancellationToken);
+
+            var missingClassIds = new HashSet<Guid>(classIds);
+            missingClassIds.ExceptWith(existingClassIds);
+
+            if (missingClassIds.Count > 0)
+            {
+                var assignments = missingClassIds.Select(classId => new UserCourseClass
+                {
+                    UserId = studentId,
+                    CourseId = courseId,
+                    ClassId = classId,
+                    AssignedByUserId = assignedByUserId,
+                    AssignedAt = DateTime.UtcNow
+                });
+
+                await _context.UserCourseClasses.AddRangeAsync(assignments, cancellationToken);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task EnsureUserCourseAsync(Guid studentId, Guid courseId, Guid? assignedByUserId, CancellationToken cancellationToken)
+        {
+            var userCourse = await _context.UserCourses
+                .FirstOrDefaultAsync(uc => uc.UserId == studentId && uc.CourseId == courseId, cancellationToken);
+
+            if (userCourse is null)
+            {
+                userCourse = new UserCourse
+                {
+                    UserId = studentId,
+                    CourseId = courseId,
+                    AssignedByUserId = assignedByUserId
+                };
+
+                await _context.UserCourses.AddAsync(userCourse, cancellationToken);
+            }
+            else if (assignedByUserId.HasValue && userCourse.AssignedByUserId is null)
+            {
+                userCourse.AssignedByUserId = assignedByUserId;
+                _context.UserCourses.Update(userCourse);
+            }
         }
 
         private static IQueryable<User> ApplyOrdering(IQueryable<User> query, GetStudentsRequest request)

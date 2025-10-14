@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using UniversityManagement.Application.Students;
 using UniversityManagement.Application.Students.Commands.CreateStudent;
 using UniversityManagement.Application.Students.Commands.DeleteStudent;
+using UniversityManagement.Application.Students.Commands.EnrollStudentInClass;
+using UniversityManagement.Application.Students.Commands.EnrollStudentInCourse;
 using UniversityManagement.Application.Students.Commands.UpdateStudent;
 using UniversityManagement.Application.Students.Queries.GetStudentById;
 using UniversityManagement.Application.Students.Queries.GetStudents;
@@ -55,5 +57,20 @@ namespace UniversityManagement.API.Controllers
             var result = await _sender.Send(new DeleteStudentCommand(id), cancellationToken);
             return Success(result, "Student deleted successfully.");
         }
+
+        [HttpPost("enroll-class")]
+        public async Task<IActionResult> EnrollInClass(EnrollStudentInClassRequest request, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new EnrollStudentInClassCommand(request), cancellationToken);
+            return Success(result, "Student enrolled in class successfully.");
+        }
+
+        [HttpPost("enroll-course")]
+        public async Task<IActionResult> EnrollInCourse(EnrollStudentInCourseRequest request, CancellationToken cancellationToken = default)
+        {
+            var result = await _sender.Send(new EnrollStudentInCourseCommand(request), cancellationToken);
+            return Success(result, "Student enrolled in course successfully.");
+        }
     }
 }
+        
