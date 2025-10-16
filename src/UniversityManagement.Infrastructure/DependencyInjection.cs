@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniversityManagement.Application.Classes.Interfaces;
 using UniversityManagement.Application.Common.Interfaces;
 using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Application.Users.Interfaces;
+using UniversityManagement.Infrastructure.Authentication;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 using UniversityManagement.Infrastructure.Database.Persistence;
 using UniversityManagement.Infrastructure.Database.Repository;
@@ -31,6 +32,8 @@ namespace UniversityManagement.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IClassRepository, ClassRepository>();
+
+            services.AddJwtAuthentication(configuration);
 
             return services;
         }

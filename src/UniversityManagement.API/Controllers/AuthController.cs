@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,7 @@ using UniversityManagement.Application.Common.Models;
 
 namespace UniversityManagement.API.Controllers
 {
+    [AllowAnonymous]
     public class AuthController : BaseApiController
     {
         private readonly ILogger<AuthController> _logger;

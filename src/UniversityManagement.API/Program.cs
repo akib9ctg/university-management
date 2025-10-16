@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using UniversityManagement.API;
 using UniversityManagement.Application;
 using UniversityManagement.Infrastructure;
 using UniversityManagement.Infrastructure.Database.Persistence;
+using UniversityManagement.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +17,13 @@ builder.Services.AddHttpClient()
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(PolicyNames.StaffOnly, policy => policy.RequireRole(UserRole.Staff.ToString()));
+    options.AddPolicy(PolicyNames.StudentOnly, policy => policy.RequireRole(UserRole.Student.ToString()));
+});
+
 var app = builder.Build();
-
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -40,6 +45,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
-

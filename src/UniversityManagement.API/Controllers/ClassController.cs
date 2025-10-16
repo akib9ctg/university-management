@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniversityManagement.API;
 using UniversityManagement.Application.Classes.Command.CreateClass;
 using UniversityManagement.Application.Classes.Command.DeleteClass;
 using UniversityManagement.Application.Classes.Command.UpdateClass;
@@ -10,6 +12,7 @@ using UniversityManagement.Application.Classes.Queries.GetClasses;
 
 namespace UniversityManagement.API.Controllers
 {
+    [Authorize(Policy = PolicyNames.StaffOnly)]
     public class ClassController : BaseApiController
     {
         private readonly ISender _sender;

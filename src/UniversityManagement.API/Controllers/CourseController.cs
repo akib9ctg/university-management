@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniversityManagement.API;
 using UniversityManagement.Application.Courses.Command.CreateCourse;
 using UniversityManagement.Application.Courses.Command.DeleteCourse;
 using UniversityManagement.Application.Courses.Command.UpdateCourse;
@@ -10,6 +12,7 @@ using UniversityManagement.Application.Courses.Queries.GetCourses;
 
 namespace UniversityManagement.API.Controllers
 {
+    [Authorize(Policy = PolicyNames.StaffOnly)]
     public class CourseController : BaseApiController
     {
         private readonly ISender _sender;

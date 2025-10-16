@@ -128,6 +128,51 @@ namespace UniversityManagement.Infrastructure.Database.Repository
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<List<UserCourseClass>> GetStudentClassEnrollmentsAsync(Guid studentId, CancellationToken cancellationToken)
+        {
+            return await _context.UserCourseClasses
+                .AsNoTracking()
+                .Include(ucc => ucc.Class)
+                .Include(ucc => ucc.Course)
+                .Include(ucc => ucc.AssignedByUser)
+                .Where(ucc => ucc.UserId == studentId
+                              && !ucc.IsDeleted
+                              && !ucc.Class.IsDeleted
+                              && !ucc.Course.IsDeleted)
+                .OrderByDescending(ucc => ucc.AssignedAt)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<UserCourseClass>> GetStudentClassmatesAsync(Guid studentId, CancellationToken cancellationToken)
+        {
+            var classIds = await _context.UserCourseClasses
+                .Where(ucc => ucc.UserId == studentId
+                              && !ucc.IsDeleted
+                              && !ucc.Class.IsDeleted
+                              && !ucc.Course.IsDeleted)
+                .Select(ucc => ucc.ClassId)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            if (classIds.Count == 0)
+            {
+                return new List<UserCourseClass>();
+            }
+
+            return await _context.UserCourseClasses
+                .AsNoTracking()
+                .Include(ucc => ucc.User)
+                .Include(ucc => ucc.Class)
+                .Include(ucc => ucc.Course)
+                .Where(ucc => classIds.Contains(ucc.ClassId)
+                              && !ucc.IsDeleted
+                              && !ucc.User.IsDeleted
+                              && !ucc.Class.IsDeleted
+                              && !ucc.Course.IsDeleted
+                              && ucc.User.Role == UserRole.Student)
+                .ToListAsync(cancellationToken);
+        }
+
         private async Task EnsureUserCourseAsync(Guid studentId, Guid courseId, Guid? assignedByUserId, CancellationToken cancellationToken)
         {
             var userCourse = await _context.UserCourses
