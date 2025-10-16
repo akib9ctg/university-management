@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using UniversityManagement.API;
 using UniversityManagement.Application;
 using UniversityManagement.Infrastructure;
+using UniversityManagement.Infrastructure.Database;
 using UniversityManagement.Infrastructure.Database.Persistence;
 using UniversityManagement.Domain.Enums;
 
@@ -37,11 +38,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-}
+using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+await db.Database.MigrateAsync();
+await ApplicationDbContextSeeder.SeedAsync(db);
 
 app.UseHttpsRedirection();
 app.UseRouting();
