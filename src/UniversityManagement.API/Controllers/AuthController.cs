@@ -11,6 +11,7 @@ using UniversityManagement.Application.Common.Models;
 namespace UniversityManagement.API.Controllers
 {
     [AllowAnonymous]
+    [Route("api/auth")]
     public class AuthController : BaseApiController
     {
         private readonly ILogger<AuthController> _logger;

@@ -56,36 +56,6 @@ namespace UniversityManagement.API.Controllers
             return Success(result);
         }
 
-        [Authorize(Policy = PolicyNames.StudentOnly)]
-        [HttpGet("me/courses")]
-        public async Task<IActionResult> GetMyCoursesAndClasses(CancellationToken cancellationToken = default)
-        {
-            var studentId = GetCurrentUserId();
-
-            if (studentId is null)
-            {
-                return Failure("Unable to determine the authenticated student.", StatusCodes.Status401Unauthorized);
-            }
-
-            var result = await _sender.Send(new GetStudentCoursesAndClassesQuery(studentId.Value), cancellationToken);
-            return Success(result);
-        }
-
-        [Authorize(Policy = PolicyNames.StudentOnly)]
-        [HttpGet("me/classmates")]
-        public async Task<IActionResult> GetMyClassmates(CancellationToken cancellationToken = default)
-        {
-            var studentId = GetCurrentUserId();
-
-            if (studentId is null)
-            {
-                return Failure("Unable to determine the authenticated student.", StatusCodes.Status401Unauthorized);
-            }
-
-            var result = await _sender.Send(new GetStudentClassmatesQuery(studentId.Value), cancellationToken);
-            return Success(result);
-        }
-
         [Authorize(Policy = PolicyNames.StaffOnly)]
         [HttpGet("{studentId:guid}/class-enrollments")]
         public async Task<IActionResult> GetClassEnrollments(Guid studentId, CancellationToken cancellationToken = default)
@@ -135,6 +105,34 @@ namespace UniversityManagement.API.Controllers
             return Success(result, "Student enrolled in course successfully.");
         }
 
-        
+        [Authorize(Policy = PolicyNames.StudentOnly)]
+        [HttpGet("me/courses")]
+        public async Task<IActionResult> GetMyCoursesAndClasses(CancellationToken cancellationToken = default)
+        {
+            var studentId = GetCurrentUserId();
+
+            if (studentId is null)
+            {
+                return Failure("Unable to determine the authenticated student.", StatusCodes.Status401Unauthorized);
+            }
+
+            var result = await _sender.Send(new GetStudentCoursesAndClassesQuery(studentId.Value), cancellationToken);
+            return Success(result);
+        }
+
+        [Authorize(Policy = PolicyNames.StudentOnly)]
+        [HttpGet("me/classmates")]
+        public async Task<IActionResult> GetMyClassmates(CancellationToken cancellationToken = default)
+        {
+            var studentId = GetCurrentUserId();
+
+            if (studentId is null)
+            {
+                return Failure("Unable to determine the authenticated student.", StatusCodes.Status401Unauthorized);
+            }
+
+            var result = await _sender.Send(new GetStudentClassmatesQuery(studentId.Value), cancellationToken);
+            return Success(result);
+        }
     }
 }
