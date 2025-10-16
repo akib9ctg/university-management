@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.API;
 using UniversityManagement.Application.Classes.Command.CreateClass;
@@ -13,61 +14,67 @@ using UniversityManagement.Application.Classes.Queries.GetClasses;
 namespace UniversityManagement.API.Controllers
 {
     [Authorize(Policy = PolicyNames.StaffOnly)]
-    public class ClassController : BaseApiController
+    [Route("api/classes")]
+    public class ClassesController : BaseApiController
     {
         private readonly ISender _sender;
 
-        public ClassController(ISender sender)
+        public ClassesController(ISender sender)
         {
             _sender = sender;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateClass(CreateClassRequest createClassRequest, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new CreateClassCommand(createClassRequest), cancellationToken);
             return Success(result);
         }
 
-        [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken = default)
+        [HttpGet("{classId:guid}")]
+        public async Task<IActionResult> GetById(Guid classId, CancellationToken cancellationToken = default)
         {
-            var result = await _sender.Send(new GetClassByIdQuery(id), cancellationToken);
+            var result = await _sender.Send(new GetClassByIdQuery(classId), cancellationToken);
             return Success(result);
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetClassesRequest request, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new GetClassesQuery(request ?? new GetClassesRequest()), cancellationToken);
             return Success(result);
         }
 
-        [HttpGet("GetAllStudentsByClassId")]
-        public async Task<IActionResult> GetAllStudentsByClassId(Guid classId, CancellationToken cancellationToken = default)
+        [HttpGet("{classId:guid}/students")]
+        public async Task<IActionResult> GetStudents(Guid classId, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new GetClassStudentsQuery(classId), cancellationToken);
             return Success(result);
         }
 
-        [HttpGet("GetAllCoursesByClassId")]
-        public async Task<IActionResult> GetAllCoursesByClassId(Guid classId, CancellationToken cancellationToken = default)
+        [HttpGet("{classId:guid}/courses")]
+        public async Task<IActionResult> GetCourses(Guid classId, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new GetClassCoursesQuery(classId), cancellationToken);
             return Success(result);
         }
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update(UpdateClassRequest updateClassRequest, CancellationToken cancellationToken = default)
+        [HttpPut("{classId:guid}")]
+        public async Task<IActionResult> Update(Guid classId, UpdateClassRequest updateClassRequest, CancellationToken cancellationToken = default)
         {
+            if (classId != updateClassRequest.Id)
+            {
+                return Failure("Route class identifier does not match request payload.", StatusCodes.Status400BadRequest);
+            }
+
             var result = await _sender.Send(new UpdateClassCommand(updateClassRequest), cancellationToken);
             return Success(result);
         }
 
-        [HttpDelete("DeleteById")]
-        public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken = default)
+        [HttpDelete("{classId:guid}")]
+        public async Task<IActionResult> Delete(Guid classId, CancellationToken cancellationToken = default)
         {
-            var result = await _sender.Send(new DeleteClassCommand(id), cancellationToken);
+            var result = await _sender.Send(new DeleteClassCommand(classId), cancellationToken);
             return Success(result, "Class deleted successfully.");
         }
     }
