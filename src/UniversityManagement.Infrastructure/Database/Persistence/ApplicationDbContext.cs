@@ -1,20 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using UniversityManagement.Application.Common.Interfaces;
+using UniversityManagement.Domain.Common;
 using UniversityManagement.Domain.Entities;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 
 namespace UniversityManagement.Infrastructure.Database.Persistence
 {
     public sealed class ApplicationDbContext
-    : DbContext, IApplicationDbContext
+        : DbContext, IApplicationDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        private readonly ICurrentUserService? _currentUserService;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUserService? currentUserService)
             : base(options)
         {
+            _currentUserService = currentUserService;
         }
 
         public DbSet<User> Users => Set<User>();
@@ -26,6 +30,30 @@ namespace UniversityManagement.Infrastructure.Database.Persistence
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            var currentUserId = _currentUserService?.GetUserId();
+            var utcNow = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>().Where(e => e.State is EntityState.Added or EntityState.Modified))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedAt = utcNow;
+                    if (Guid.TryParse(currentUserId, out var parsedUserId))
+                    {
+                        entry.Entity.CreatedById = parsedUserId;
+                    }
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.ModifiedAt = utcNow;
+                    if (Guid.TryParse(currentUserId, out var parsedUserId))
+                    {
+                        entry.Entity.ModifiedById = parsedUserId;
+                    }
+                }
+            }
+
             return await base.SaveChangesAsync(cancellationToken);
         }
 
@@ -34,11 +62,9 @@ namespace UniversityManagement.Infrastructure.Database.Persistence
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
             modelBuilder.Entity<User>()
                 .Property(user => user.Role)
                 .HasConversion<string>();
-
         }
     }
 }

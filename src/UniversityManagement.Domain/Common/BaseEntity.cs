@@ -9,9 +9,9 @@ namespace UniversityManagement.Domain.Common
     public abstract class BaseEntity
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public string? CreatedBy { get; set; }
+        public Guid? CreatedById { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string? ModifiedBy { get; set; }
+        public Guid? ModifiedById { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public bool IsDeleted { get; set; }
     }
