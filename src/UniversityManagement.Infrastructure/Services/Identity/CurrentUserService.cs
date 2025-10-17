@@ -1,6 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http;
 using UniversityManagement.Application.Common.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace UniversityManagement.Infrastructure.Services.Identity
 {
@@ -13,10 +14,20 @@ namespace UniversityManagement.Infrastructure.Services.Identity
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string? GetUserId()
+        public Guid? GetUserId()
         {
-            return _httpContextAccessor.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var principal = _httpContextAccessor.HttpContext?.User;
+
+            var userIdString = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (Guid.TryParse(userIdString, out var userId))
+            {
+                return userId;
+            }
+
+            return null;
         }
-            
+
     }
 }

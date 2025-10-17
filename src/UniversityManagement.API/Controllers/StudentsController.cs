@@ -18,6 +18,7 @@ using UniversityManagement.Application.Students.Queries.GetStudentClassmates;
 using UniversityManagement.Application.Students.Queries.GetStudentCoursesAndClasses;
 using UniversityManagement.Application.Students.Queries.GetStudents;
 using UniversityManagement.API;
+using UniversityManagement.Application.Common.Interfaces;
 
 namespace UniversityManagement.API.Controllers
 {
@@ -26,10 +27,12 @@ namespace UniversityManagement.API.Controllers
     public class StudentsController : BaseApiController
     {
         private readonly ISender _sender;
+        private readonly ICurrentUserService _currentUserService;
 
-        public StudentsController(ISender sender)
+        public StudentsController(ISender sender, ICurrentUserService currentUserService)
         {
             _sender = sender;
+            _currentUserService = currentUserService;
         }
 
         [Authorize(Policy = PolicyNames.StaffOnly)]
@@ -89,7 +92,7 @@ namespace UniversityManagement.API.Controllers
         [HttpPost("{studentId:guid}/classes/{classId:guid}")]
         public async Task<IActionResult> EnrollInClass(Guid studentId, Guid classId, CancellationToken cancellationToken = default)
         {
-            var assignedByUserId = GetCurrentUserId();
+            var assignedByUserId = _currentUserService.GetUserId();
             var request = new EnrollStudentInClassRequest(studentId, classId, assignedByUserId);
             var result = await _sender.Send(new EnrollStudentInClassCommand(request), cancellationToken);
             return Success(result, "Student enrolled in class successfully.");
@@ -99,7 +102,7 @@ namespace UniversityManagement.API.Controllers
         [HttpPost("{studentId:guid}/courses/{courseId:guid}")]
         public async Task<IActionResult> EnrollInCourse(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
         {
-            var assignedByUserId = GetCurrentUserId();
+            var assignedByUserId = _currentUserService.GetUserId();
             var request = new EnrollStudentInCourseRequest(studentId, courseId, assignedByUserId);
             var result = await _sender.Send(new EnrollStudentInCourseCommand(request), cancellationToken);
             return Success(result, "Student enrolled in course successfully.");
@@ -109,7 +112,7 @@ namespace UniversityManagement.API.Controllers
         [HttpGet("me/courses")]
         public async Task<IActionResult> GetMyCoursesAndClasses(CancellationToken cancellationToken = default)
         {
-            var studentId = GetCurrentUserId();
+            var studentId = _currentUserService.GetUserId();
 
             if (studentId is null)
             {
@@ -124,7 +127,7 @@ namespace UniversityManagement.API.Controllers
         [HttpGet("me/classmates")]
         public async Task<IActionResult> GetMyClassmates(CancellationToken cancellationToken = default)
         {
-            var studentId = GetCurrentUserId();
+            var studentId = _currentUserService.GetUserId();
 
             if (studentId is null)
             {

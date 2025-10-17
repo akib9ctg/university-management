@@ -38,19 +38,15 @@ namespace UniversityManagement.Infrastructure.Database.Persistence
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedAt = utcNow;
-                    if (Guid.TryParse(currentUserId, out var parsedUserId))
-                    {
-                        entry.Entity.CreatedById = parsedUserId;
-                    }
+
+                    entry.Entity.CreatedById = currentUserId;
+
                 }
 
                 if (entry.State == EntityState.Modified)
                 {
                     entry.Entity.ModifiedAt = utcNow;
-                    if (Guid.TryParse(currentUserId, out var parsedUserId))
-                    {
-                        entry.Entity.ModifiedById = parsedUserId;
-                    }
+                    entry.Entity.ModifiedById = currentUserId;
                 }
             }
 
