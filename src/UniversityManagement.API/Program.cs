@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.API;
+using UniversityManagement.API.Middleware;
 using UniversityManagement.Application;
 using UniversityManagement.Infrastructure;
 using UniversityManagement.Infrastructure.Database;
@@ -45,6 +46,9 @@ await ApplicationDbContextSeeder.SeedAsync(db);
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
