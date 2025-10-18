@@ -1,5 +1,3 @@
-using System;
-
 namespace UniversityManagement.Application.Students.Commands.EnrollStudentInCourse
 {
     public sealed record EnrollStudentInCourseRequest(

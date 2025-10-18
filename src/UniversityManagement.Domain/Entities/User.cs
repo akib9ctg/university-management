@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UniversityManagement.Domain.Common;
 using UniversityManagement.Domain.Enums;
 

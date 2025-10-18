@@ -1,8 +1,4 @@
 using MediatR;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Application.Students;
 

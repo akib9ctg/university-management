@@ -1,8 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using UniversityManagement.Application.Common.Models;
 
 namespace UniversityManagement.API.Middleware;

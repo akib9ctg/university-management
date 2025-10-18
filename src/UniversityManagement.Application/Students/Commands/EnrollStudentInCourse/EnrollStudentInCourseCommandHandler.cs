@@ -1,10 +1,5 @@
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Courses.Interfaces;
-using UniversityManagement.Application.Students;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Enums;
 

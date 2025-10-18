@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Application.Courses.Interfaces;

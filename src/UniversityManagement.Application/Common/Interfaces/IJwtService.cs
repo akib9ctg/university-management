@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniversityManagement.Domain.Entities;
+﻿using UniversityManagement.Domain.Entities;
 
 namespace UniversityManagement.Application.Common.Interfaces
 {

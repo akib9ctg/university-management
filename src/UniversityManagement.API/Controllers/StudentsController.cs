@@ -1,12 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Threading;
-using System.Threading.Tasks;
-using UniversityManagement.Application.Students;
+using UniversityManagement.Application.Common.Interfaces;
 using UniversityManagement.Application.Students.Commands.CreateStudent;
 using UniversityManagement.Application.Students.Commands.DeleteStudent;
 using UniversityManagement.Application.Students.Commands.EnrollStudentInClass;
@@ -17,8 +12,6 @@ using UniversityManagement.Application.Students.Queries.GetStudentClassEnrollmen
 using UniversityManagement.Application.Students.Queries.GetStudentClassmates;
 using UniversityManagement.Application.Students.Queries.GetStudentCoursesAndClasses;
 using UniversityManagement.Application.Students.Queries.GetStudents;
-using UniversityManagement.API;
-using UniversityManagement.Application.Common.Interfaces;
 
 namespace UniversityManagement.API.Controllers
 {

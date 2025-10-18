@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Domain.Common;
-using UniversityManagement.Infrastructure.Common.Extensions;
 using UniversityManagement.Infrastructure.Common.Interfaces;
 
 namespace UniversityManagement.Infrastructure.Database.Repository

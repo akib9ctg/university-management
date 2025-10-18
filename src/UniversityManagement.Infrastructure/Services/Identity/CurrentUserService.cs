@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
-using UniversityManagement.Application.Common.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using UniversityManagement.Application.Common.Interfaces;
 
 namespace UniversityManagement.Infrastructure.Services.Identity
 {

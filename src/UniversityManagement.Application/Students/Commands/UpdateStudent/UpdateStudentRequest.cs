@@ -1,5 +1,3 @@
-using System;
-
 namespace UniversityManagement.Application.Students.Commands.UpdateStudent
 {
     public sealed record UpdateStudentRequest

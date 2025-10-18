@@ -1,7 +1,4 @@
 using MediatR;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Enums;
 

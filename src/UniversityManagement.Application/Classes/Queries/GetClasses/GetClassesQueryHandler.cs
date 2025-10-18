@@ -1,4 +1,3 @@
-using System.Linq;
 using MediatR;
 using UniversityManagement.Application.Classes.Interfaces;
 using UniversityManagement.Application.Common.Models;

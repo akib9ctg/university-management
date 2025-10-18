@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using UniversityManagement.API;
 using UniversityManagement.API.Middleware;
 using UniversityManagement.Application;
+using UniversityManagement.Domain.Enums;
 using UniversityManagement.Infrastructure;
 using UniversityManagement.Infrastructure.Database;
 using UniversityManagement.Infrastructure.Database.Persistence;
-using UniversityManagement.Domain.Enums;
-using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

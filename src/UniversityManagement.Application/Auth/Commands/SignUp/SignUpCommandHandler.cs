@@ -1,10 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using UniversityManagement.Application.Common.Utilities;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Entities;
@@ -25,7 +19,7 @@ namespace UniversityManagement.Application.Auth.Commands.SignUp
             var existing = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
             if (existing is not null)
                 throw new InvalidOperationException("User already exists with this email.");
-            
+
             var user = new User
             {
                 Id = Guid.NewGuid(),

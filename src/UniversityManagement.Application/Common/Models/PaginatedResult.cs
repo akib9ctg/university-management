@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace UniversityManagement.Application.Common.Models
 {
     public sealed record PaginatedResult<T>

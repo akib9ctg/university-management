@@ -1,13 +1,7 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Common.Interfaces;
 using UniversityManagement.Application.Common.Utilities;
 using UniversityManagement.Application.Users.Interfaces;
-using UniversityManagement.Domain.Entities;
 
 namespace UniversityManagement.Application.Auth.Commands.Login
 {

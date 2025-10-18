@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using UniversityManagement.Application.Students;
 using UniversityManagement.Application.Users.Interfaces;
 using UniversityManagement.Domain.Enums;
 
@@ -40,12 +35,12 @@ namespace UniversityManagement.Application.Students.Queries.GetStudentClassmates
             var responses = new List<StudentClassmatesResponse>();
 
             foreach (var group in classmates.GroupBy(ucc => new
-                     {
-                         ucc.ClassId,
-                         ClassName = ucc.Class.Name,
-                         ucc.CourseId,
-                         CourseName = ucc.Course.Name
-                     }))
+            {
+                ucc.ClassId,
+                ClassName = ucc.Class.Name,
+                ucc.CourseId,
+                CourseName = ucc.Course.Name
+            }))
             {
                 var students = group
                     .Where(entry => entry.UserId != request.StudentId)

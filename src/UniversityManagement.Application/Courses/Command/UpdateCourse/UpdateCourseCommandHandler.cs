@@ -1,7 +1,4 @@
 using MediatR;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Courses.Interfaces;
 
 namespace UniversityManagement.Application.Courses.Command.UpdateCourse

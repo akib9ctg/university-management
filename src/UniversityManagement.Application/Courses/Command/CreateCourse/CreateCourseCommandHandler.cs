@@ -1,6 +1,4 @@
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Courses.Interfaces;
 using UniversityManagement.Domain.Entities;
 

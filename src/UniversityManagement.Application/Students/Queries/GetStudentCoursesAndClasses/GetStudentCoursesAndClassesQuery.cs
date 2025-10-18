@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using MediatR;
 
 namespace UniversityManagement.Application.Students.Queries.GetStudentCoursesAndClasses

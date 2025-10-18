@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using UniversityManagement.Application.Students;
-
 namespace UniversityManagement.Application.Students.Queries.GetStudentClassmates
 {
     public sealed record StudentClassmatesResponse(

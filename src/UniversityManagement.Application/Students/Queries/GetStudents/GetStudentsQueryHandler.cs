@@ -1,9 +1,5 @@
 using MediatR;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using UniversityManagement.Application.Common.Models;
-using UniversityManagement.Application.Students;
 using UniversityManagement.Application.Users.Interfaces;
 
 namespace UniversityManagement.Application.Students.Queries.GetStudents

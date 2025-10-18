@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace UniversityManagement.Application.Common.Utilities
 {
@@ -19,7 +14,7 @@ namespace UniversityManagement.Application.Common.Utilities
                 hashAlgorithm: HashAlgorithmName.SHA256,
                 outputLength: 32
             );
-            
+
             return $"{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
         }
 

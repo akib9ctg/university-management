@@ -1,15 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using UniversityManagement.API;
 using UniversityManagement.Application.Classes.Command.CreateClass;
 using UniversityManagement.Application.Classes.Command.DeleteClass;
 using UniversityManagement.Application.Classes.Command.UpdateClass;
 using UniversityManagement.Application.Classes.Queries.GetClassById;
 using UniversityManagement.Application.Classes.Queries.GetClassCourses;
-using UniversityManagement.Application.Classes.Queries.GetClassStudents;
 using UniversityManagement.Application.Classes.Queries.GetClasses;
+using UniversityManagement.Application.Classes.Queries.GetClassStudents;
 
 namespace UniversityManagement.API.Controllers
 {

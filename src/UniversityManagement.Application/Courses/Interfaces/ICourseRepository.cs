@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UniversityManagement.Application.Common.Models;
 using UniversityManagement.Application.Courses.Queries.GetCourses;
 using UniversityManagement.Domain.Entities;

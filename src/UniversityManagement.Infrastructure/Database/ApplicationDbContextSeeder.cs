@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application.Common.Utilities;
 using UniversityManagement.Domain.Entities;

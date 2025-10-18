@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.Application.Common.Models;
 
 namespace UniversityManagement.API.Controllers
@@ -11,7 +8,7 @@ namespace UniversityManagement.API.Controllers
     {
         protected IActionResult Success<T>(T data, string message = "Success")
         {
-             return Ok(ApiResponse<T>.Ok(data, message));
+            return Ok(ApiResponse<T>.Ok(data, message));
         }
 
         protected IActionResult Failure(string message, int status = 400)
