@@ -13,6 +13,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+const string CorsPolicyName = "LocalDevelopmentCors";
 
 builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 {
@@ -25,9 +26,18 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 var configuration = builder.Configuration;
 builder.Services.AddSingleton<IConfiguration>(configuration);
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient()
-                .AddCors()
-                .AddControllers();
+builder.Services.AddHttpClient();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -58,6 +68,8 @@ await ApplicationDbContextSeeder.SeedAsync(db);
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseCors(CorsPolicyName);
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

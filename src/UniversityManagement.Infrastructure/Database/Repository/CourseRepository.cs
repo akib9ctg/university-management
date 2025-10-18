@@ -50,6 +50,37 @@ namespace UniversityManagement.Infrastructure.Database.Repository
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<bool> AddClassToCourseAsync(Guid courseId, Guid classId, CancellationToken cancellationToken)
+        {
+            var existing = await _context.CourseClasses
+                .FirstOrDefaultAsync(cc => cc.CourseId == courseId && cc.ClassId == classId, cancellationToken);
+
+            if (existing is not null)
+            {
+                if (existing.IsDeleted)
+                {
+                    existing.IsDeleted = false;
+                    existing.ModifiedAt = DateTime.UtcNow;
+                    _context.CourseClasses.Update(existing);
+                    await _context.SaveChangesAsync(cancellationToken);
+                    return true;
+                }
+
+                return false;
+            }
+
+            var courseClass = new CourseClass
+            {
+                CourseId = courseId,
+                ClassId = classId
+            };
+
+            await _context.CourseClasses.AddAsync(courseClass, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return true;
+        }
+
         private static IQueryable<Course> ApplyFilters(IQueryable<Course> query, GetCoursesRequest request)
         {
             if (!string.IsNullOrWhiteSpace(request.Name))

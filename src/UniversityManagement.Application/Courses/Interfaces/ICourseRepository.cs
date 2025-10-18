@@ -12,5 +12,6 @@ namespace UniversityManagement.Application.Courses.Interfaces
         Task<PaginatedResult<Course>> GetPagedAsync(GetCoursesRequest request, CancellationToken cancellationToken);
         Task<List<User>> GetStudentsByCourseIdAsync(Guid courseId, CancellationToken cancellationToken);
         Task<List<Class>> GetClassesByCourseIdAsync(Guid courseId, CancellationToken cancellationToken);
+        Task<bool> AddClassToCourseAsync(Guid courseId, Guid classId, CancellationToken cancellationToken);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.API;
+using UniversityManagement.Application.Courses.Command.AssignClassToCourse;
 using UniversityManagement.Application.Courses.Command.CreateCourse;
 using UniversityManagement.Application.Courses.Command.DeleteCourse;
 using UniversityManagement.Application.Courses.Command.UpdateCourse;
@@ -57,6 +58,17 @@ namespace UniversityManagement.API.Controllers
         {
             var result = await _sender.Send(new GetCourseClassesQuery(courseId), cancellationToken);
             return Success(result);
+        }
+
+        [HttpPost("{courseId:guid}/classes/{classId:guid}")]
+        public async Task<IActionResult> AddClass(Guid courseId, Guid classId, CancellationToken cancellationToken = default)
+        {
+            var created = await _sender.Send(new AssignClassToCourseCommand(courseId, classId), cancellationToken);
+            var message = created
+                ? "Class linked to course successfully."
+                : "Class is already linked to this course.";
+
+            return Success(created, message);
         }
 
         [HttpPut("{courseId:guid}")]
