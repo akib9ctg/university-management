@@ -6,8 +6,20 @@ using UniversityManagement.Infrastructure;
 using UniversityManagement.Infrastructure.Database;
 using UniversityManagement.Infrastructure.Database.Persistence;
 using UniversityManagement.Domain.Enums;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+{
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services);
+});
 
 // Add services to the container.
 var configuration = builder.Configuration;
@@ -48,6 +60,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseSerilogRequestLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

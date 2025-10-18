@@ -53,7 +53,13 @@ public sealed class ExceptionHandlingMiddleware
             message = notFoundException.Message;
         }
 
-        _logger.LogError(exception, "Unhandled exception occurred while processing request.");
+        _logger.LogError(
+            exception,
+            "Unhandled exception processing {Method} {Path}. TraceId: {TraceId}. Responding with {StatusCode}",
+            context.Request.Method,
+            context.Request.Path,
+            context.TraceIdentifier,
+            statusCode);
 
         var response = ApiResponse<object>.Fail(message);
 
