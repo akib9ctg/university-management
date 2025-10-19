@@ -1,5 +1,4 @@
 using Moq;
-using UniversityManagement.Application.Classes;
 using UniversityManagement.Application.Classes.Command.CreateClass;
 using UniversityManagement.Application.Classes.Interfaces;
 using UniversityManagement.Domain.Entities;
