@@ -1,81 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using UniversityManagement.API;
-using UniversityManagement.API.Middleware;
-using UniversityManagement.Application;
-using UniversityManagement.Domain.Enums;
-using UniversityManagement.Infrastructure;
-using UniversityManagement.Infrastructure.Database;
-using UniversityManagement.Infrastructure.Database.Persistence;
+using UniversityManagement.API.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
-const string CorsPolicyName = "LocalDevelopmentCors";
 
-builder.Host.UseSerilog((context, services, loggerConfiguration) =>
-{
-    loggerConfiguration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services);
-});
-
-// Add services to the container.
-var configuration = builder.Configuration;
-builder.Services.AddSingleton<IConfiguration>(configuration);
-builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(CorsPolicyName, policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-builder.Services.AddControllers();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(PolicyNames.StaffOnly, policy => policy.RequireRole(UserRole.Staff.ToString()));
-    options.AddPolicy(PolicyNames.StudentOnly, policy => policy.RequireRole(UserRole.Student.ToString()));
-});
+builder.ConfigureSerilog();
+builder.ConfigureApplicationServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "University management V1");
-        c.RoutePrefix = string.Empty;
-    });
-}
+await app.MigrateDatabaseAsync();
+app.ConfigureRequestPipeline();
 
-using var scope = app.Services.CreateScope();
-var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-await db.Database.MigrateAsync();
-await ApplicationDbContextSeeder.SeedAsync(db);
-
-app.UseHttpsRedirection();
-app.UseRouting();
-
-app.UseCors(CorsPolicyName);
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-app.UseSerilogRequestLogging();
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
+await app.RunAsync();

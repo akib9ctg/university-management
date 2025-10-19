@@ -11,33 +11,54 @@ using UniversityManagement.Infrastructure.Database.Persistence;
 using UniversityManagement.Infrastructure.Database.Repository;
 using UniversityManagement.Infrastructure.Services.Identity;
 
-namespace UniversityManagement.Infrastructure
+namespace UniversityManagement.Infrastructure;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services
+            .AddDatabase(configuration)
+            .AddCurrentUserContext()
+            .AddAuthentication(configuration)
+            .AddRepositories();
 
-            services.AddScoped<IApplicationDbContext>(provider =>
-                provider.GetRequiredService<ApplicationDbContext>());
+        return services;
+    }
 
-            services.AddHttpContextAccessor();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
+    private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IApplicationDbContext>(provider =>
+            provider.GetRequiredService<ApplicationDbContext>());
 
-            // repositories
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<IClassRepository, ClassRepository>();
+        return services;
+    }
 
-            services.AddJwtAuthentication(configuration);
+    private static IServiceCollection AddCurrentUserContext(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        return services;
+    }
 
-            return services;
-        }
+    private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddJwtAuthentication(configuration);
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IClassRepository, ClassRepository>();
+
+        return services;
     }
 }

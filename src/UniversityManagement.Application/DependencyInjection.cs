@@ -1,19 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace UniversityManagement.Application
+namespace UniversityManagement.Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static void AddApplication(this IServiceCollection services)
     {
-        public static void AddApplication(this IServiceCollection services)
+        services.AddMediatR(configuration =>
         {
-            services.AddMediatR(configuration =>
-            {
-                configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
-
-                //configuration.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
-            });
-
-            //services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
-        }
+            configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+        });
     }
 }
