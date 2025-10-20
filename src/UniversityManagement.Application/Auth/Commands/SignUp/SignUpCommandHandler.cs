@@ -16,18 +16,18 @@ namespace UniversityManagement.Application.Auth.Commands.SignUp
 
         public async Task<SignUpResponse> Handle(SignUpCommand request, CancellationToken cancellationToken)
         {
-            var existing = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+            var existing = await _userRepository.GetByEmailAsync(request.SignUpRequest.Email, cancellationToken);
             if (existing is not null)
                 throw new InvalidOperationException("User already exists with this email.");
 
             var user = new User
             {
                 Id = Guid.NewGuid(),
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                PasswordHash = PasswordHasher.Hash(request.Password),
-                Role = UserRole.Student
+                Email = request.SignUpRequest.Email,
+                FirstName = request.SignUpRequest.FirstName,
+                LastName = request.SignUpRequest.LastName,
+                PasswordHash = PasswordHasher.Hash(request.SignUpRequest.Password),
+                Role = UserRole.Staff
             };
             await _userRepository.AddAsync(user, cancellationToken);
             return new SignUpResponse(user.Id, user.Email);

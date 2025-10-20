@@ -1,6 +1,12 @@
-﻿namespace UniversityManagement.Application.Courses.Command.DeleteCourse
+using FluentValidation;
+
+namespace UniversityManagement.Application.Courses.Command.DeleteCourse;
+
+public sealed class DeleteCourseCommandValidator : AbstractValidator<DeleteCourseCommand>
 {
-    internal class DeleteCourseValidator
+    public DeleteCourseCommandValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
     }
 }

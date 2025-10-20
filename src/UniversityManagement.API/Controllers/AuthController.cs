@@ -18,14 +18,14 @@ namespace UniversityManagement.API.Controllers
 
 
         [HttpPost("signup")]
-        public async Task<IActionResult> SignUp(SignUpRequest request, CancellationToken token)
+        public async Task<IActionResult> SignUp(SignUpRequest request, CancellationToken token = default)
         {
-            var result = await _sender.Send(new SignUpCommand(request.Email, request.Password, request.FirstName, request.LastName), token);
+            var result = await _sender.Send(new SignUpCommand(request), token);
             return Success(result, "Signup successful");
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request, CancellationToken token)
+        public async Task<IActionResult> Login(LoginRequest request, CancellationToken token = default)
         {
             var result = await _sender.Send(new LoginCommand(request.Email, request.Password), token);
             return Success(result, "Login successful");

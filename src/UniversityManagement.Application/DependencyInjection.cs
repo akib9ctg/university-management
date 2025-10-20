@@ -1,4 +1,7 @@
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using UniversityManagement.Application.Common.Behaviors;
 
 namespace UniversityManagement.Application;
 
@@ -10,5 +13,8 @@ public static class DependencyInjection
         {
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
         });
+
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
     }
 }

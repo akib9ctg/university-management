@@ -1,7 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 using UniversityManagement.Application.Common.Models;
+using DataAnnotationsValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace UniversityManagement.API.Middleware;
 
@@ -32,11 +34,18 @@ public sealed class ExceptionHandlingMiddleware
     {
         var statusCode = (int)HttpStatusCode.InternalServerError;
         var message = "An unexpected error occurred.";
+        List<string>? validationErrors = null;
 
-        if (exception is ValidationException validationException)
+        if (exception is ValidationException fluentValidationException)
         {
             statusCode = (int)HttpStatusCode.BadRequest;
-            message = validationException.Message;
+            message = "Validation failed.";
+            validationErrors = BuildValidationErrors(fluentValidationException);
+        }
+        else if (exception is DataAnnotationsValidationException dataAnnotationsValidationException)
+        {
+            statusCode = (int)HttpStatusCode.BadRequest;
+            message = dataAnnotationsValidationException.Message;
         }
         else if (exception is UnauthorizedAccessException unauthorizedException)
         {
@@ -59,12 +68,32 @@ public sealed class ExceptionHandlingMiddleware
             context.TraceIdentifier,
             statusCode);
 
-        var response = ApiResponse<object>.Fail(message);
+        var response = ApiResponse<object>.Fail(message, validationErrors);
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
         var payload = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(payload);
+    }
+
+    private static List<string> BuildValidationErrors(ValidationException exception)
+    {
+        var errors = new List<string>();
+
+        foreach (var failure in exception.Errors)
+        {
+            if (!string.IsNullOrWhiteSpace(failure?.ErrorMessage))
+            {
+                errors.Add(failure.ErrorMessage);
+            }
+        }
+
+        if (errors.Count == 0 && !string.IsNullOrWhiteSpace(exception.Message))
+        {
+            errors.Add(exception.Message);
+        }
+
+        return errors;
     }
 }
