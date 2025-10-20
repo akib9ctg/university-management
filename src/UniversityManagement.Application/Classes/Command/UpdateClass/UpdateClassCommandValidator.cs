@@ -17,7 +17,9 @@ public sealed class UpdateClassCommandValidator : AbstractValidator<UpdateClassC
 
             RuleFor(x => x.UpdateClassRequest.Name)
                 .NotEmpty()
-                .MaximumLength(200);
+                .Matches("^[A-Za-z0-9]+$")
+                .WithMessage("Class name must contain only alphanumeric characters.")
+                .MaximumLength(100);
 
             RuleFor(x => x.UpdateClassRequest.Description)
                 .NotEmpty()

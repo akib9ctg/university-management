@@ -14,7 +14,9 @@ public sealed class CreateCourseCommandValidator : AbstractValidator<CreateCours
         {
             RuleFor(x => x.createCourseRequest.name)
                 .NotEmpty()
-                .MaximumLength(200);
+                .Matches("^[A-Za-z0-9]+$")
+                .WithMessage("Course name must contain only alphanumeric characters.")
+                .MaximumLength(100);
 
             RuleFor(x => x.createCourseRequest.description)
                 .NotEmpty()

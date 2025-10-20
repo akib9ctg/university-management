@@ -17,7 +17,9 @@ public sealed class UpdateCourseCommandValidator : AbstractValidator<UpdateCours
 
             RuleFor(x => x.updateCourseRequest.Name)
                 .NotEmpty()
-                .MaximumLength(200);
+                .Matches("^[A-Za-z0-9]+$")
+                .WithMessage("Course name must contain only alphanumeric characters.")
+                .MaximumLength(100);
 
             RuleFor(x => x.updateCourseRequest.Description)
                 .NotEmpty()

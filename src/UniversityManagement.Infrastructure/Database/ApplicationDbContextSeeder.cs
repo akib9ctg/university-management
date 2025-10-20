@@ -58,28 +58,28 @@ namespace UniversityManagement.Infrastructure.Database
             var programmingCourse = new Course
             {
                 Id = Guid.NewGuid(),
-                Name = "Programming 101",
+                Name = "Programming101",
                 Description = "Introduction to programming fundamentals."
             };
 
             var businessCourse = new Course
             {
                 Id = Guid.NewGuid(),
-                Name = "Business Basics",
+                Name = "BusinessBasics",
                 Description = "Foundations of business administration."
             };
 
             var mathClass = new Class
             {
                 Id = Guid.NewGuid(),
-                Name = "Math 101 - Morning",
+                Name = "Math101Morning",
                 Description = "Morning session for Math 101."
             };
 
             var programmingLabClass = new Class
             {
                 Id = Guid.NewGuid(),
-                Name = "Programming Lab - Afternoon",
+                Name = "ProgrammingLabAfternoon",
                 Description = "Hands-on programming lab session."
             };
 

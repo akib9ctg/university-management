@@ -14,7 +14,9 @@ public sealed class CreateClassCommandValidator : AbstractValidator<CreateClassC
         {
             RuleFor(x => x.CreateClassRequest.name)
                 .NotEmpty()
-                .MaximumLength(200);
+                .Matches("^[A-Za-z0-9]+$")
+                .WithMessage("Class name must contain only alphanumeric characters.")
+                .MaximumLength(100);
 
             RuleFor(x => x.CreateClassRequest.description)
                 .NotEmpty()
