@@ -10,11 +10,18 @@ namespace UniversityManagement.Infrastructure.Database.Configuration
         {
             base.Configure(builder);
 
-            builder.ToTable("Classes");
+            builder.ToTable("Classes", table =>
+            {
+                table.HasCheckConstraint(
+                    "CK_Classes_Name_Alphanumeric",
+                    "\"Name\" ~ '^[A-Za-z0-9]+$'");
+            });
 
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
 
             builder.HasMany(x => x.CourseClasses)
                 .WithOne(cc => cc.Class)

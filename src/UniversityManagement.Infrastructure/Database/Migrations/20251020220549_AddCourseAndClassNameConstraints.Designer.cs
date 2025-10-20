@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UniversityManagement.Infrastructure.Database.Persistence;
@@ -11,9 +12,11 @@ using UniversityManagement.Infrastructure.Database.Persistence;
 namespace UniversityManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251020220549_AddCourseAndClassNameConstraints")]
+    partial class AddCourseAndClassNameConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,10 +62,7 @@ namespace UniversityManagement.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Classes", t =>
-                        {
-                            t.HasCheckConstraint("CK_Classes_Name_Alphanumeric", "\"Name\" ~ '^[A-Za-z0-9]+$'");
-                        });
+                    b.ToTable("Classes", (string)null);
                 });
 
             modelBuilder.Entity("UniversityManagement.Domain.Entities.Course", b =>
@@ -103,10 +103,7 @@ namespace UniversityManagement.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Courses", t =>
-                        {
-                            t.HasCheckConstraint("CK_Courses_Name_Alphanumeric", "\"Name\" ~ '^[A-Za-z0-9]+$'");
-                        });
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("UniversityManagement.Domain.Entities.CourseClass", b =>
