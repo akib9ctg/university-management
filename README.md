@@ -36,10 +36,13 @@ The API reads configuration in this order: `appsettings.json` -> `appsettings.{E
 ```bash
 docker compose up --build
 ```
+Make sure Docker Desktop (or your Docker engine) is running before executing the command; otherwise `docker compose` will fail to connect to the daemon.
 This builds the API image, starts PostgreSQL 16, and pgAdmin 4. Service endpoints:
 - API: http://localhost:8080 (Swagger UI at `http://localhost:8080/swagger`)
-- PostgreSQL: `localhost:5432` (credentials `postgres` / `postgres`)
+- PostgreSQL: _internal only_ (reachable from other containers through the `postgres` host name)
 - pgAdmin: http://localhost:5050 (login `akib9ctg@gmail.com` / `admin`)
+
+> To inspect the database from the host, exec into the postgres container (`docker compose exec postgres psql -U postgres`) or use the pgAdmin container that is exposed on port 5050.
 
 To stop the stack, run `docker compose down`. Add `-v` if you want to remove the persisted database volume (`pgdata`).
 
@@ -67,4 +70,5 @@ Apply migrations manually (if you disabled automatic migrations) with:
 dotnet ef database update --project src/UniversityManagement.Infrastructure --startup-project src/UniversityManagement.API
 ```
 
-
+## Database Diagram
+An up-to-date ERD is available at `docs/UniversityManagement_ERD.png`.
