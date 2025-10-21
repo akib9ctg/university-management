@@ -1,0 +1,901 @@
+{
+  "info": {
+    "_postman_id": "3e0186ab-18d0-4f34-8e79-4ac9f511c4f9",
+    "name": "University Management API",
+    "description": "Postman collection covering the UniversityManagement.API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "staffToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "courseId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "classId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstName\": \"Alice\",\n    \"lastName\": \"Nguyen\",\n    \"email\": \"alice@example.com\",\n    \"password\": \"ChangeMe123!\",\n    \"confirmPassword\": \"ChangeMe123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signup"
+              ]
+            },
+            "description": "Creates a new user account. Open to unauthenticated requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"ChangeMe123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates a user and returns a JWT token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstName\": \"Evelyn\",\n    \"lastName\": \"Stone\",\n    \"email\": \"evelyn.stone@example.com\",\n    \"password\": \"StudentPass123!\",\n    \"confirmPassword\": \"StudentPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ]
+            },
+            "description": "Creates a new student profile. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}"
+              ]
+            },
+            "description": "Retrieves a single student by identifier. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Students",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students?pageNumber=1&pageSize=10&orderBy=FirstName&sortDirection=Asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Defaults to 1 if omitted."
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Defaults to 10 if omitted."
+                },
+                {
+                  "key": "firstName",
+                  "value": "",
+                  "description": "Optional first name filter."
+                },
+                {
+                  "key": "lastName",
+                  "value": "",
+                  "description": "Optional last name filter."
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "Optional email filter."
+                },
+                {
+                  "key": "orderBy",
+                  "value": "FirstName",
+                  "description": "Defaults to FirstName."
+                },
+                {
+                  "key": "sortDirection",
+                  "value": "Asc",
+                  "description": "Asc or Desc."
+                }
+              ]
+            },
+            "description": "Lists students with pagination and optional filtering. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student Class Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}/class-enrollments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}",
+                "class-enrollments"
+              ]
+            },
+            "description": "Returns the classes a student is enrolled in. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{studentId}}\",\n    \"firstName\": \"Evelyn\",\n    \"lastName\": \"Stone\",\n    \"email\": \"evelyn.stone@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}"
+              ]
+            },
+            "description": "Updates basic student details. Route id must match payload id. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}"
+              ]
+            },
+            "description": "Deletes a student. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Enroll Student In Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}/classes/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}",
+                "classes",
+                "{{classId}}"
+              ]
+            },
+            "description": "Enrolls a student in a class. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Enroll Student In Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/{{studentId}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{studentId}}",
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Enrolls a student in a course. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Courses And Classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/me/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "me",
+                "courses"
+              ]
+            },
+            "description": "Returns the authenticated student\u2019s courses and their classes. Requires StudentOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Classmates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/me/classmates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "me",
+                "classmates"
+              ]
+            },
+            "description": "Lists classmates for the authenticated student. Requires StudentOnly policy."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Computer Science 101\",\n    \"description\": \"Introduction to CS fundamentals\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "description": "Creates a course. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Retrieves course details. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses?pageNumber=1&pageSize=10&orderBy=Name&sortDirection=Asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Defaults to 1 if omitted."
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Defaults to 10 if omitted."
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "description": "Optional name filter."
+                },
+                {
+                  "key": "description",
+                  "value": "",
+                  "description": "Optional description filter."
+                },
+                {
+                  "key": "orderBy",
+                  "value": "Name",
+                  "description": "Defaults to Name."
+                },
+                {
+                  "key": "sortDirection",
+                  "value": "Asc",
+                  "description": "Asc or Desc."
+                }
+              ]
+            },
+            "description": "Lists courses with pagination and optional filtering. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course Students",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}",
+                "students"
+              ]
+            },
+            "description": "Returns students enrolled in a specific course. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course Classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/classes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}",
+                "classes"
+              ]
+            },
+            "description": "Returns classes linked to a course. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Class To Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/classes/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}",
+                "classes",
+                "{{classId}}"
+              ]
+            },
+            "description": "Links an existing class to a course. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{courseId}}\",\n    \"name\": \"Computer Science 101\",\n    \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Updates an existing course. Route id must match payload id. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Removes a course. Requires StaffOnly policy."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "Create Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Freshman Cohort A\",\n    \"description\": \"Freshman group for 2025\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes"
+              ]
+            },
+            "description": "Creates a class. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{classId}}"
+              ]
+            },
+            "description": "Retrieves a class by identifier. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes?pageNumber=1&pageSize=10&orderBy=Name&sortDirection=Asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Defaults to 1 if omitted."
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Defaults to 10 if omitted."
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "description": "Optional name filter."
+                },
+                {
+                  "key": "description",
+                  "value": "",
+                  "description": "Optional description filter."
+                },
+                {
+                  "key": "orderBy",
+                  "value": "Name",
+                  "description": "Defaults to Name."
+                },
+                {
+                  "key": "sortDirection",
+                  "value": "Asc",
+                  "description": "Asc or Desc."
+                }
+              ]
+            },
+            "description": "Lists classes with pagination and optional filtering. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Students",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{classId}}",
+                "students"
+              ]
+            },
+            "description": "Returns students assigned to a class. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{classId}}",
+                "courses"
+              ]
+            },
+            "description": "Returns courses linked to a class. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Class",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{classId}}\",\n    \"name\": \"Freshman Cohort A\",\n    \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{classId}}"
+              ]
+            },
+            "description": "Updates a class. Route id must match payload id. Requires StaffOnly policy."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Class",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{classId}}"
+              ]
+            },
+            "description": "Deletes a class. Requires StaffOnly policy."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
