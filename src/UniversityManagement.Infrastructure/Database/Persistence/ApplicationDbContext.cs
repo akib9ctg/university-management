@@ -57,6 +57,13 @@ namespace UniversityManagement.Infrastructure.Database.Persistence
             modelBuilder.Entity<User>()
                 .Property(user => user.Role)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<User>().HasQueryFilter(entity => !entity.IsDeleted);
+            modelBuilder.Entity<Course>().HasQueryFilter(entity => !entity.IsDeleted);
+            modelBuilder.Entity<Class>().HasQueryFilter(entity => !entity.IsDeleted);
+            modelBuilder.Entity<CourseClass>().HasQueryFilter(entity => !entity.IsDeleted);
+            modelBuilder.Entity<UserCourse>().HasQueryFilter(entity => !entity.IsDeleted);
+            modelBuilder.Entity<UserCourseClass>().HasQueryFilter(entity => !entity.IsDeleted);
         }
     }
 }

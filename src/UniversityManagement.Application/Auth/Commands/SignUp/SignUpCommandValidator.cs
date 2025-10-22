@@ -14,11 +14,11 @@ public sealed class SignUpCommandValidator : AbstractValidator<SignUpCommand>
             .NotEmpty()
             .MinimumLength(8);
 
-        RuleFor(x => x.SignUpRequest.Email)
+        RuleFor(x => x.SignUpRequest.FirstName)
             .NotEmpty()
             .MaximumLength(100);
 
-        RuleFor(x => x.SignUpRequest.Email)
+        RuleFor(x => x.SignUpRequest.LastName)
             .NotEmpty()
             .MaximumLength(100);
 
