@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
-using FluentValidation;
 using UniversityManagement.Application.Common.Models;
 using DataAnnotationsValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 

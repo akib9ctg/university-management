@@ -3,6 +3,6 @@ using MediatR;
 namespace UniversityManagement.Application.Classes.Command.CreateClass
 {
     public sealed record CreateClassCommand
-        (CreateClassRequest CreateClassRequest) 
+        (CreateClassRequest CreateClassRequest)
         : IRequest<ClassResponse>;
 }

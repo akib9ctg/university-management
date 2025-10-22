@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace UniversityManagement.Application.Common.Models;
 
 public sealed class ApiResponse<T>

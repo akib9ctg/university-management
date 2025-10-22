@@ -3,6 +3,6 @@ using MediatR;
 namespace UniversityManagement.Application.Students.Commands.DeleteStudent
 {
     public sealed record DeleteStudentCommand
-        (Guid Id) 
+        (Guid Id)
         : IRequest<bool>;
 }

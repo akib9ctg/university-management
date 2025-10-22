@@ -1,9 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using UniversityManagement.API;
 using UniversityManagement.Application;
 using UniversityManagement.Domain.Enums;
 using UniversityManagement.Infrastructure;

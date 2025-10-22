@@ -90,27 +90,27 @@ namespace UniversityManagement.Infrastructure.Migrations
                 WHERE c."Id" = sanitized."Id";
                 """);
 
-                migrationBuilder.CreateIndex(
-                    name: "IX_Courses_Name",
-                    table: "Courses",
-                    column: "Name",
-                    unique: true);
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_Name",
+                table: "Courses",
+                column: "Name",
+                unique: true);
 
-                migrationBuilder.CreateIndex(
-                    name: "IX_Classes_Name",
-                    table: "Classes",
-                    column: "Name",
-                    unique: true);
+            migrationBuilder.CreateIndex(
+                name: "IX_Classes_Name",
+                table: "Classes",
+                column: "Name",
+                unique: true);
 
-                migrationBuilder.AddCheckConstraint(
-                    name: "CK_Courses_Name_Alphanumeric",
-                    table: "Courses",
-                    sql: "\"Name\" ~ '^[A-Za-z0-9]+$'");
+            migrationBuilder.AddCheckConstraint(
+                name: "CK_Courses_Name_Alphanumeric",
+                table: "Courses",
+                sql: "\"Name\" ~ '^[A-Za-z0-9]+$'");
 
-                migrationBuilder.AddCheckConstraint(
-                    name: "CK_Classes_Name_Alphanumeric",
-                    table: "Classes",
-                    sql: "\"Name\" ~ '^[A-Za-z0-9]+$'");
+            migrationBuilder.AddCheckConstraint(
+                name: "CK_Classes_Name_Alphanumeric",
+                table: "Classes",
+                sql: "\"Name\" ~ '^[A-Za-z0-9]+$'");
         }
 
         /// <inheritdoc />
