@@ -78,4 +78,6 @@ Import `UniversityManagement.postman_collection.json` (root of the repo) into Po
 
 ## Default Accounts
 - Staff login: `admin@university.com`
-- Password: `Admin123!`
+- Staff password: `Admin123!`
+- Student login: `alice@student.com`
+- Student password: `Student123!`
