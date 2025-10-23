@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagement.Application.Common.Utilities;
 using UniversityManagement.Domain.Entities;
@@ -28,9 +29,9 @@ namespace UniversityManagement.Infrastructure.Database
             var staffUser = new User
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Admin",
+                FirstName = "Staff",
                 LastName = "User",
-                Email = "admin@university.local",
+                Email = "admin@university.com",
                 PasswordHash = PasswordHasher.Hash("Admin123!"),
                 Role = UserRole.Staff
             };
@@ -40,7 +41,7 @@ namespace UniversityManagement.Infrastructure.Database
                 Id = Guid.NewGuid(),
                 FirstName = "Alice",
                 LastName = "Johnson",
-                Email = "alice@student.local",
+                Email = "alice@student.com",
                 PasswordHash = PasswordHasher.Hash("Student123!"),
                 Role = UserRole.Student
             };
@@ -50,7 +51,7 @@ namespace UniversityManagement.Infrastructure.Database
                 Id = Guid.NewGuid(),
                 FirstName = "Bob",
                 LastName = "Martinez",
-                Email = "bob@student.local",
+                Email = "bob@student.com",
                 PasswordHash = PasswordHasher.Hash("Student123!"),
                 Role = UserRole.Student
             };
@@ -58,29 +59,36 @@ namespace UniversityManagement.Infrastructure.Database
             var programmingCourse = new Course
             {
                 Id = Guid.NewGuid(),
-                Name = "Programming101",
-                Description = "Introduction to programming fundamentals."
+                Name = "CSE",
+                Description = "Computer science and engineering"
             };
 
             var businessCourse = new Course
             {
                 Id = Guid.NewGuid(),
-                Name = "BusinessBasics",
+                Name = "BBA",
                 Description = "Foundations of business administration."
+            };
+
+            var programmingClass = new Class
+            {
+                Id = Guid.NewGuid(),
+                Name = "CSE1101",
+                Description = "Programming language"
+            };
+
+            var foundationBBAClass = new Class
+            {
+                Id = Guid.NewGuid(),
+                Name = "BBA1101",
+                Description = "Fundamental of BBA"
             };
 
             var mathClass = new Class
             {
                 Id = Guid.NewGuid(),
-                Name = "Math101Morning",
+                Name = "Math1101",
                 Description = "Morning session for Math 101."
-            };
-
-            var programmingLabClass = new Class
-            {
-                Id = Guid.NewGuid(),
-                Name = "ProgrammingLabAfternoon",
-                Description = "Hands-on programming lab session."
             };
 
             var courseClasses = new List<CourseClass>
@@ -89,15 +97,15 @@ namespace UniversityManagement.Infrastructure.Database
                 {
                     CourseId = programmingCourse.Id,
                     Course = programmingCourse,
-                    ClassId = programmingLabClass.Id,
-                    Class = programmingLabClass
+                    ClassId = programmingClass.Id,
+                    Class = programmingClass
                 },
                 new()
                 {
                     CourseId = businessCourse.Id,
                     Course = businessCourse,
-                    ClassId = mathClass.Id,
-                    Class = mathClass
+                    ClassId = foundationBBAClass.Id,
+                    Class = foundationBBAClass
                 }
             };
 
@@ -113,64 +121,60 @@ namespace UniversityManagement.Infrastructure.Database
                 },
                 new()
                 {
-                    UserId = studentAlice.Id,
-                    User = studentAlice,
-                    CourseId = businessCourse.Id,
-                    Course = businessCourse,
-                    AssignedByUserId = staffUser.Id
-                },
-                new()
-                {
                     UserId = studentBob.Id,
                     User = studentBob,
-                    CourseId = programmingCourse.Id,
-                    Course = programmingCourse,
+                    CourseId = businessCourse.Id,
+                    Course = businessCourse,
                     AssignedByUserId = staffUser.Id
                 }
             };
 
             var now = DateTime.UtcNow;
 
-            var userCourseClasses = new List<UserCourseClass>
+            var userCourseClasses = new List<UserCourseClass>();
+
+            foreach (var userCourse in userCourses)
             {
-                new()
+                var classesForCourse = courseClasses
+                    .Where(cc => cc.CourseId == userCourse.CourseId)
+                    .Select(cc => cc.Class);
+
+                foreach (var @class in classesForCourse)
                 {
-                    UserId = studentAlice.Id,
-                    User = studentAlice,
-                    CourseId = programmingCourse.Id,
-                    Course = programmingCourse,
-                    ClassId = programmingLabClass.Id,
-                    Class = programmingLabClass,
-                    AssignedByUserId = staffUser.Id,
-                    AssignedAt = now
-                },
-                new()
+                    userCourseClasses.Add(new UserCourseClass
+                    {
+                        UserId = userCourse.UserId,
+                        User = userCourse.User,
+                        CourseId = userCourse.CourseId,
+                        Course = userCourse.Course,
+                        ClassId = @class.Id,
+                        Class = @class,
+                        AssignedByUserId = staffUser.Id,
+                        AssignedAt = now
+                    });
+                }
+            }
+
+            foreach (var student in new[] { studentAlice, studentBob })
+            {
+                var userCourse = userCourses.First(course => course.UserId == student.Id);
+
+                userCourseClasses.Add(new UserCourseClass
                 {
-                    UserId = studentAlice.Id,
-                    User = studentAlice,
-                    CourseId = businessCourse.Id,
-                    Course = businessCourse,
+                    UserId = student.Id,
+                    User = student,
+                    CourseId = userCourse.CourseId,
+                    Course = userCourse.Course,
                     ClassId = mathClass.Id,
                     Class = mathClass,
                     AssignedByUserId = staffUser.Id,
                     AssignedAt = now
-                },
-                new()
-                {
-                    UserId = studentBob.Id,
-                    User = studentBob,
-                    CourseId = programmingCourse.Id,
-                    Course = programmingCourse,
-                    ClassId = programmingLabClass.Id,
-                    Class = programmingLabClass,
-                    AssignedByUserId = staffUser.Id,
-                    AssignedAt = now
-                }
-            };
+                });
+            }
 
             await context.Users.AddRangeAsync(new[] { staffUser, studentAlice, studentBob }, cancellationToken);
             await context.Courses.AddRangeAsync(new[] { programmingCourse, businessCourse }, cancellationToken);
-            await context.Classes.AddRangeAsync(new[] { mathClass, programmingLabClass }, cancellationToken);
+            await context.Classes.AddRangeAsync(new[] { programmingClass, foundationBBAClass, mathClass }, cancellationToken);
             await context.CourseClasses.AddRangeAsync(courseClasses, cancellationToken);
             await context.UserCourses.AddRangeAsync(userCourses, cancellationToken);
             await context.UserCourseClasses.AddRangeAsync(userCourseClasses, cancellationToken);

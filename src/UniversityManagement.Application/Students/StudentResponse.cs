@@ -8,7 +8,6 @@ namespace UniversityManagement.Application.Students
         string FirstName,
         string LastName,
         string Email,
-        UserRole Role,
         DateTime CreatedAt,
         DateTime? ModifiedAt)
     {
@@ -18,7 +17,6 @@ namespace UniversityManagement.Application.Students
                 user.FirstName,
                 user.LastName,
                 user.Email,
-                user.Role,
                 user.CreatedAt,
                 user.ModifiedAt);
     }
