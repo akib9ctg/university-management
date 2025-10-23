@@ -75,3 +75,7 @@ An up-to-date ERD is available at `docs/UniversityManagement_ERD.png`.
 
 ## Postman Collection
 Import `UniversityManagement.postman_collection.json` (root of the repo) into Postman to explore the API. The collection includes environment-agnostic requests organised by feature area. After importing, set the `{{baseUrl}}` variable to match your running API instance (for Docker use `http://localhost:8080`, for local `dotnet run` use `https://localhost:7003` or `http://localhost:5267`).
+
+## Default Accounts
+- Staff login: `admin@university.com`
+- Password: `Admin123!`
