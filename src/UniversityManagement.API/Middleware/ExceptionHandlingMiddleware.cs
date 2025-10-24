@@ -1,4 +1,6 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Net;
 using System.Text.Json;
 using UniversityManagement.Application.Common.Models;
@@ -10,7 +12,7 @@ public sealed class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-
+    private const string DefaultUniqueViolationMessage = "A record with the same unique value already exists.";
     public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
@@ -58,6 +60,12 @@ public sealed class ExceptionHandlingMiddleware
             statusCode = (int)HttpStatusCode.NotFound;
             message = notFoundException.Message;
         }
+        else if (exception is DbUpdateException dbUpdateException &&
+                 TryHandleDbUpdateException(dbUpdateException, out var uniqueConstraintMessage))
+        {
+            statusCode = StatusCodes.Status409Conflict;
+            message = uniqueConstraintMessage;
+        }
 
         _logger.LogError(
             exception,
@@ -95,4 +103,48 @@ public sealed class ExceptionHandlingMiddleware
 
         return errors;
     }
+
+    private static bool TryHandleDbUpdateException(DbUpdateException exception, out string friendlyMessage)
+    {
+        friendlyMessage = DefaultUniqueViolationMessage;
+
+        if (exception.InnerException is not PostgresException postgresException)
+        {
+            return false;
+        }
+
+        if (!string.Equals(postgresException.SqlState, PostgresErrorCodes.UniqueViolation, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        friendlyMessage = ResolveUniqueViolationMessage(postgresException.ConstraintName);
+        return true;
+    }
+
+    private static string ResolveUniqueViolationMessage(string? constraintName)
+    {
+        if (string.IsNullOrWhiteSpace(constraintName))
+        {
+            return DefaultUniqueViolationMessage;
+        }
+
+        if (UniqueConstraintErrorMessages.TryGetValue(constraintName, out var message))
+        {
+            return message;
+        }
+
+        return DefaultUniqueViolationMessage;
+    }
+
+
+    private static readonly Dictionary<string, string> UniqueConstraintErrorMessages = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["IX_Classes_Name"] = "A class with the same name already exists.",
+        ["IX_Courses_Name"] = "A course with the same name already exists.",
+        ["IX_Users_Email"] = "A user with the same email address already exists.",
+        ["IX_CourseClasses_CourseId_ClassId"] = "This course is already linked to the specified class.",
+        ["IX_UserCourses_UserId_CourseId"] = "The user is already enrolled in the specified course.",
+        ["IX_UserCourseClass_UserId_CourseId_ClassId"] = "The user is already assigned to this course and class combination."
+    };
 }
