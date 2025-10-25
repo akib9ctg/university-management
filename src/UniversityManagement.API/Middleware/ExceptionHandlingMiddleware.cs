@@ -1,5 +1,7 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using System.Net;
 using System.Text.Json;
@@ -12,11 +14,16 @@ public sealed class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
     private const string DefaultUniqueViolationMessage = "A record with the same unique value already exists.";
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger,
+        IOptions<JsonOptions> jsonOptions)
     {
         _next = next;
         _logger = logger;
+        _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -80,7 +87,7 @@ public sealed class ExceptionHandlingMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
-        var payload = JsonSerializer.Serialize(response);
+        var payload = JsonSerializer.Serialize(response, _jsonSerializerOptions);
         await context.Response.WriteAsync(payload);
     }
 

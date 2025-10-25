@@ -26,7 +26,7 @@ namespace UniversityManagement.API.Controllers
         public async Task<IActionResult> CreateClass(CreateClassRequest createClassRequest, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new CreateClassCommand(createClassRequest), cancellationToken);
-            return Success(result);
+            return SuccessCreatedAtAction(nameof(GetById), new { classId = result.Id }, result, "Class created successfully.");
         }
 
         [HttpGet("{classId:guid}")]

@@ -27,7 +27,7 @@ namespace UniversityManagement.API.Controllers
         public async Task<IActionResult> CreateCourse(CreateCourseRequest createCourseRequest, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new CreateCourseCommand(createCourseRequest), cancellationToken);
-            return Success(result);
+            return SuccessCreatedAtAction(nameof(GetById), new { courseId = result.Id }, result, "Course created successfully.");
         }
 
         [HttpGet("{courseId:guid}")]

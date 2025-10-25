@@ -33,7 +33,7 @@ namespace UniversityManagement.API.Controllers
         public async Task<IActionResult> CreateStudent(CreateStudentRequest request, CancellationToken cancellationToken = default)
         {
             var result = await _sender.Send(new CreateStudentCommand(request), cancellationToken);
-            return Success(result);
+            return SuccessCreatedAtAction(nameof(GetById), new { studentId = result.Id }, result, "Student created successfully.");
         }
 
         [Authorize(Policy = PolicyNames.StaffOnly)]

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using UniversityManagement.Application;
 using UniversityManagement.Domain.Enums;
 using UniversityManagement.Infrastructure;
@@ -62,7 +64,13 @@ public static class WebApplicationBuilderExtensions
         });
         services.AddHttpClient();
 
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            });
         services.AddApplication();
         services.AddInfrastructure(configuration);
 

@@ -21,7 +21,7 @@ namespace UniversityManagement.API.Controllers
         public async Task<IActionResult> SignUp(SignUpRequest request, CancellationToken token = default)
         {
             var result = await _sender.Send(new SignUpCommand(request), token);
-            return Success(result, "Signup successful");
+            return Success(result, "Signup successful", StatusCodes.Status201Created);
         }
 
         [HttpPost("login")]
