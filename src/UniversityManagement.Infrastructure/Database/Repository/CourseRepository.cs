@@ -18,6 +18,17 @@ namespace UniversityManagement.Infrastructure.Database.Repository
             _context = dbContext;
         }
 
+        public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            var normalizedName = name.Trim().ToLowerInvariant();
+
+            return await _context.Courses
+                .AsNoTracking()
+                .AnyAsync(course =>
+                    course.Name.ToLower().Equals(normalizedName), cancellationToken);
+        }
+
         public Task<PaginatedResult<Course>> GetPagedAsync(GetCoursesRequest request, CancellationToken cancellationToken)
         {
             request ??= new GetCoursesRequest();
@@ -33,7 +44,7 @@ namespace UniversityManagement.Infrastructure.Database.Repository
         {
             return await _context.UserCourses
                 .AsNoTracking()
-                .Where(uc => uc.CourseId == courseId && !uc.IsDeleted && !uc.User.IsDeleted && uc.User.Role == UserRole.Student)
+                .Where(uc => uc.CourseId == courseId && uc.User.Role == UserRole.Student)
                 .Select(uc => uc.User)
                 .ToListAsync(cancellationToken);
         }
@@ -42,7 +53,7 @@ namespace UniversityManagement.Infrastructure.Database.Repository
         {
             return await _context.CourseClasses
                 .AsNoTracking()
-                .Where(cc => cc.CourseId == courseId && !cc.IsDeleted && !cc.Class.IsDeleted)
+                .Where(cc => cc.CourseId == courseId)
                 .Select(cc => cc.Class)
                 .ToListAsync(cancellationToken);
         }

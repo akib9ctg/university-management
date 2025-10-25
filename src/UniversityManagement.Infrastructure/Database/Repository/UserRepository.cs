@@ -20,7 +20,11 @@ namespace UniversityManagement.Infrastructure.Database.Repository
 
         public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            return Queryable.FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
+            ArgumentException.ThrowIfNullOrWhiteSpace(email);
+            var normalizedEmail = email.Trim().ToLowerInvariant();
+
+            return Queryable.FirstOrDefaultAsync(user =>
+                user.Email.ToLower() == normalizedEmail, cancellationToken);
         }
 
         public Task<PaginatedResult<User>> GetStudentsPagedAsync(GetStudentsRequest request, CancellationToken cancellationToken)
@@ -132,10 +136,7 @@ namespace UniversityManagement.Infrastructure.Database.Repository
                 .Include(ucc => ucc.Class)
                 .Include(ucc => ucc.Course)
                 .Include(ucc => ucc.AssignedByUser)
-                .Where(ucc => ucc.UserId == studentId
-                              && !ucc.IsDeleted
-                              && !ucc.Class.IsDeleted
-                              && !ucc.Course.IsDeleted)
+                .Where(ucc => ucc.UserId == studentId)
                 .OrderByDescending(ucc => ucc.AssignedAt)
                 .ToListAsync(cancellationToken);
         }
@@ -143,10 +144,7 @@ namespace UniversityManagement.Infrastructure.Database.Repository
         public async Task<List<UserCourseClass>> GetStudentClassmatesAsync(Guid studentId, CancellationToken cancellationToken)
         {
             var classIds = await _context.UserCourseClasses
-                .Where(ucc => ucc.UserId == studentId
-                              && !ucc.IsDeleted
-                              && !ucc.Class.IsDeleted
-                              && !ucc.Course.IsDeleted)
+                .Where(ucc => ucc.UserId == studentId)
                 .Select(ucc => ucc.ClassId)
                 .Distinct()
                 .ToListAsync(cancellationToken);
@@ -162,10 +160,6 @@ namespace UniversityManagement.Infrastructure.Database.Repository
                 .Include(ucc => ucc.Class)
                 .Include(ucc => ucc.Course)
                 .Where(ucc => classIds.Contains(ucc.ClassId)
-                              && !ucc.IsDeleted
-                              && !ucc.User.IsDeleted
-                              && !ucc.Class.IsDeleted
-                              && !ucc.Course.IsDeleted
                               && ucc.User.Role == UserRole.Student)
                 .ToListAsync(cancellationToken);
         }

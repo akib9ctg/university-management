@@ -11,5 +11,6 @@ namespace UniversityManagement.Application.Courses.Interfaces
         Task<List<User>> GetStudentsByCourseIdAsync(Guid courseId, CancellationToken cancellationToken);
         Task<List<Class>> GetClassesByCourseIdAsync(Guid courseId, CancellationToken cancellationToken);
         Task<bool> AddClassToCourseAsync(Guid courseId, Guid classId, CancellationToken cancellationToken);
+        Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
     }
 }

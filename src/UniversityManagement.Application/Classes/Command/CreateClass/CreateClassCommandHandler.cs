@@ -15,10 +15,24 @@ namespace UniversityManagement.Application.Classes.Command.CreateClass
 
         public async Task<ClassResponse> Handle(CreateClassCommand request, CancellationToken cancellationToken)
         {
+            var createRequest = request.CreateClassRequest ?? throw new ArgumentNullException(nameof(request.CreateClassRequest));
+            if (string.IsNullOrWhiteSpace(createRequest.name))
+            {
+                throw new ArgumentException("Class name is required.", nameof(createRequest.name));
+            }
+
+            var trimmedName = createRequest.name.Trim();
+            var exists = await _classRepository.ExistsByNameAsync(trimmedName, cancellationToken);
+
+            if (exists)
+            {
+                throw new InvalidOperationException($"A class named '{trimmedName}' already exists.");
+            }
+
             var newClass = new Class
             {
-                Name = request.CreateClassRequest.name,
-                Description = request.CreateClassRequest.description,
+                Name = trimmedName,
+                Description = createRequest.description
             };
 
             await _classRepository.AddAsync(newClass, cancellationToken);

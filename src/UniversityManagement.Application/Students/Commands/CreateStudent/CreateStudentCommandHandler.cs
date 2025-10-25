@@ -24,7 +24,14 @@ namespace UniversityManagement.Application.Students.Commands.CreateStudent
                 throw new InvalidOperationException("Password and confirm password do not match.");
             }
 
-            var existing = await _userRepository.GetByEmailAsync(createRequest.Email, cancellationToken);
+            if (string.IsNullOrWhiteSpace(createRequest.Email))
+            {
+                throw new ArgumentException("Email is required.", nameof(createRequest.Email));
+            }
+
+            var normalizedEmail = createRequest.Email.Trim();
+            var existing = await _userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+
             if (existing is not null)
             {
                 throw new InvalidOperationException("A user already exists with this email address.");
@@ -33,9 +40,9 @@ namespace UniversityManagement.Application.Students.Commands.CreateStudent
             var student = new User
             {
                 Id = Guid.NewGuid(),
-                FirstName = createRequest.FirstName,
-                LastName = createRequest.LastName,
-                Email = createRequest.Email,
+                FirstName = createRequest.FirstName?.Trim() ?? string.Empty,
+                LastName = createRequest.LastName?.Trim() ?? string.Empty,
+                Email = normalizedEmail,
                 PasswordHash = PasswordHasher.Hash(createRequest.Password),
                 Role = UserRole.Student
             };

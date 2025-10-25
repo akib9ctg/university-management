@@ -10,5 +10,6 @@ namespace UniversityManagement.Application.Classes.Interfaces
         Task<PaginatedResult<Class>> GetPagedAsync(GetClassesRequest request, CancellationToken cancellationToken);
         Task<List<User>> GetStudentsByClassIdAsync(Guid classId, CancellationToken cancellationToken);
         Task<List<Course>> GetCoursesByClassIdAsync(Guid classId, CancellationToken cancellationToken);
+        Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
     }
 }

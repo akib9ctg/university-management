@@ -62,6 +62,13 @@ public sealed class ExceptionHandlingMiddleware
                 ? "Unauthorized"
                 : unauthorizedException.Message;
         }
+        else if (exception is InvalidOperationException invalidOperationException)
+        {
+            statusCode = (int)HttpStatusCode.BadRequest;
+            message = string.IsNullOrWhiteSpace(invalidOperationException.Message)
+                ? "The request could not be processed."
+                : invalidOperationException.Message;
+        }
         else if (exception is KeyNotFoundException notFoundException)
         {
             statusCode = (int)HttpStatusCode.NotFound;
