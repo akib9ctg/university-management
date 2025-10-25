@@ -6,7 +6,6 @@ using UniversityManagement.Application.Auth.Commands.SignUp;
 
 namespace UniversityManagement.API.Controllers
 {
-    [AllowAnonymous]
     [Route("api/auth")]
     public class AuthController : BaseApiController
     {
@@ -16,7 +15,7 @@ namespace UniversityManagement.API.Controllers
             _sender = sender;
         }
 
-
+        [Authorize(Policy = PolicyNames.StaffOnly)]
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(SignUpRequest request, CancellationToken token = default)
         {
@@ -24,6 +23,7 @@ namespace UniversityManagement.API.Controllers
             return Success(result, "Signup successful", StatusCodes.Status201Created);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request, CancellationToken token = default)
         {
