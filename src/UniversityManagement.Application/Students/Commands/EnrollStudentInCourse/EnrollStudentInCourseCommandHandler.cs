@@ -32,7 +32,12 @@ namespace UniversityManagement.Application.Students.Commands.EnrollStudentInCour
                 throw new KeyNotFoundException($"Course with Id {enrollRequest.CourseId} not found.");
             }
 
-            await _userRepository.EnrollStudentInCourseAsync(student.Id, course.Id, enrollRequest.AssignedByUserId, cancellationToken);
+            var enrolled = await _userRepository.EnrollStudentInCourseAsync(student.Id, course.Id, enrollRequest.AssignedByUserId, cancellationToken);
+
+            if (!enrolled)
+            {
+                throw new InvalidOperationException("Student is already enrolled in the specified course.");
+            }
 
             return StudentResponse.FromEntity(student);
         }

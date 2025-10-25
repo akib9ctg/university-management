@@ -70,6 +70,12 @@ namespace UniversityManagement.Infrastructure.Database
                 Description = "Foundations of business administration."
             };
 
+            var mathCourse = new Course
+            {
+                Id = Guid.NewGuid(),
+                Name = "MATH",
+                Description = "Foundations of Math."
+            };
             var programmingClass = new Class
             {
                 Id = Guid.NewGuid(),
@@ -106,6 +112,13 @@ namespace UniversityManagement.Infrastructure.Database
                     Course = businessCourse,
                     ClassId = foundationBBAClass.Id,
                     Class = foundationBBAClass
+                },
+                new()
+                {
+                    CourseId = mathCourse.Id,
+                    Course = mathCourse,
+                    ClassId = mathClass.Id,
+                    Class = mathClass
                 }
             };
 
@@ -158,15 +171,15 @@ namespace UniversityManagement.Infrastructure.Database
             foreach (var student in new[] { studentAlice, studentBob })
             {
                 var userCourse = userCourses.First(course => course.UserId == student.Id);
-
+                var mathCourseClass = courseClasses.First(c => c.Class.Name == "Math1101");
                 userCourseClasses.Add(new UserCourseClass
                 {
                     UserId = student.Id,
                     User = student,
-                    CourseId = userCourse.CourseId,
-                    Course = userCourse.Course,
-                    ClassId = mathClass.Id,
-                    Class = mathClass,
+                    CourseId = mathCourseClass.CourseId,
+                    Course = mathCourseClass.Course,
+                    ClassId = mathCourseClass.ClassId,
+                    Class = mathCourseClass.Class,
                     AssignedByUserId = staffUser.Id,
                     AssignedAt = now
                 });
