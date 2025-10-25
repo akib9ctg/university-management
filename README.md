@@ -37,6 +37,7 @@ The API reads configuration in this order: `appsettings.json` -> `appsettings.{E
 docker compose up --build
 ```
 Make sure Docker Desktop (or your Docker engine) is running before executing the command; otherwise `docker compose` will fail to connect to the daemon.
+Also ensure that `8080` (API) and `5050` (pgAdmin) are free on your host before starting the stack—if another service is already bound to either port, Docker will fail the run step with a port binding error.
 This builds the API image, starts PostgreSQL 16, and pgAdmin 4. Service endpoints:
 - API: http://localhost:8080 (Swagger UI at `http://localhost:8080/swagger`)
 - PostgreSQL: _internal only_ (reachable from other containers through the `postgres` host name)
@@ -59,6 +60,7 @@ To stop the stack, run `docker compose down`. Add `-v` if you want to remove the
    dotnet run --project src/UniversityManagement.API/UniversityManagement.API.csproj
    ```
    By default the app listens on `https://localhost:7003` and `http://localhost:5267` (see `Properties/launchSettings.json`).
+If those ports are occupied (for example by another API or development server), either stop the conflicting process or update `Properties/launchSettings.json` (and any reverse-proxy config) to use unused ports; otherwise Kestrel will refuse to start.
 
 ## Database Migrations
 Migrations live under `src/UniversityManagement.Infrastructure/Database/Migrations`. To add a new migration:
