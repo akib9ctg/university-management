@@ -82,7 +82,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"ChangeMe123!\"\n}"
+              "raw": "{\n    \"email\": \"admin@university.com\",\n    \"password\": \"Admin123!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
@@ -433,7 +433,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Computer Science 101\",\n    \"description\": \"Introduction to CS fundamentals\"\n}"
+              "raw": "{\n    \"name\": \"CSE\",\n    \"description\": \"Core Computer Science Engineering overview\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/courses",
@@ -625,7 +625,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{courseId}}\",\n    \"name\": \"Computer Science 101\",\n    \"description\": \"Updated description\"\n}"
+              "raw": "{\n    \"id\": \"{{courseId}}\",\n    \"name\": \"CSE\",\n    \"description\": \"Updated Computer Science Engineering overview\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/courses/{{courseId}}",
@@ -688,7 +688,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Freshman Cohort A\",\n    \"description\": \"Freshman group for 2025\"\n}"
+              "raw": "{\n    \"name\": \"CSE1101\",\n    \"description\": \"Introductory CSE 1101 cohort\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/classes",
@@ -853,7 +853,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{classId}}\",\n    \"name\": \"Freshman Cohort A\",\n    \"description\": \"Updated description\"\n}"
+              "raw": "{\n    \"id\": \"{{classId}}\",\n    \"name\": \"CSE1101\",\n    \"description\": \"Updated CSE 1101 cohort description\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/classes/{{classId}}",
