@@ -47,6 +47,10 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{staffToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -66,7 +70,7 @@
                 "signup"
               ]
             },
-            "description": "Creates a new user account. Open to unauthenticated requests."
+            "description": "Creates a new user account. Requires a staff bearer token."
           },
           "response": []
         },
